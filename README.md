@@ -88,9 +88,22 @@ googletrans==4.0.0rc1
 
 ### Deploy Container
 * Select the "Deploy one revision from an existing container image" and put in the image name: `dlops/simple-translate:latest`
+* Give you Cloud Run a `Service name`
 * Under Authentication, select "Allow unauthenticated invocations"
-* Click "CREATE" and wait for your docker image to be deployed as a Cloud Run
+* Click "CREATE" and the docker image will be deployed as a Cloud Run
 * Your screen should look like this:
 <img src="images/cloud-run-create.png"  width="500">
+
+* Deployment will take a few minutes to complete
+
+### Test Cloud Run
+
+* Get the URL of the Cloud Run from the service details page
+* The endpoint should looks like: `https://simple-translate-run-ckilfntmda-uc.a.run.app` 
+* Test the URL by going to your [Endpoint URL](https://simple-translate-run-ckilfntmda-uc.a.run.app)
+* Add some parameters and  test again with:
+    - text="Good afternoon everyone" src=en dest=fr, add `?text=Good afternoon everyone&src=en&dest=fr` to the url  [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Good afternoon everyone&src=en&dest=fr>)
+    - text="Very cool concept" src=en dest=el, add `?text=Very cool concept&src=en&dest=el` to the url [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Very cool concept&src=en&dest=el>)
+    - text="Ready to go home?" src=en dest=hi, add `?text=Ready to go home?&src=en&dest=hi` to the url [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Ready to go home?&src=en&dest=hi>)
 
 
