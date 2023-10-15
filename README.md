@@ -83,4 +83,14 @@ googletrans==4.0.0rc1
 
 ### Setup Cloud Run
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
+* Click the "+ CREATE SERVICE" button
+* If you have not enabled the required APIs, a popup will showup
+
+### Deploy Container
+* Select the "Deploy one revision from an existing container image" and put in the image name: `dlops/simple-translate:latest`
+* Under Authentication, select "Allow unauthenticated invocations"
+* Click "CREATE" and wait for your docker image to be deployed as a Cloud Run
+* Your screen should look like this:
+<img src="images/cloud-run-create.png"  width="500">
+
 
