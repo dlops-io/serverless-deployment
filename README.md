@@ -43,7 +43,7 @@ def hello_http(request):
 
     translator = Translator()
 
-    text = "Welcome to AC215"
+    text = "Welcome to AI5"
     src = "en"
     dest = "es"
     if request_args and 'text' in request_args:
