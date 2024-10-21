@@ -124,7 +124,7 @@ Here are the details for creating a job:
 
 This will run the simple-translate container using the default arguments. If you want to pass arguments:
 * Select "CONTAINER(S)" tab and in the SETTINGS area
-* For Container arguments type in: cli.py --text 'Ready to go home?'
+* For Container arguments type in: cli.py --text Ready+to+go+home?
 
 Here are the details for running a job with container arguments:
 <img src="images/cloud-run-job-02.png"  width="500">
