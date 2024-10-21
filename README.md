@@ -120,12 +120,14 @@ In the Create job screen fill in the following details:
 * Select the check box "Execute job immediately"
 
 Here are the details for creating a job:
-<img src="images/cloud-run-job-01.png"  width="500">
+
+<img src="images/cloud-run-job-01.png"  width="700">
 
 This will run the simple-translate container using the default arguments. If you want to pass arguments:
 * Select "CONTAINER(S)" tab and in the SETTINGS area
 * For Container arguments type in: cli.py --text Ready+to+go+home?
 
 Here are the details for running a job with container arguments:
-<img src="images/cloud-run-job-02.png"  width="500">
+
+<img src="images/cloud-run-job-02.png"  width="700">
 
