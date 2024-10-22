@@ -79,6 +79,10 @@ googletrans==4.0.0rc1
     - text="Very cool concept" src=en dest=el, add `?text=Very cool concept&src=en&dest=el` to the url [Endpoint](<https://us-central1-ac215-project.cloudfunctions.net/simple-translate?text=Very cool concept&src=en&dest=el>)
     - text="Ready to go home?" src=en dest=hi, add `?text=Ready to go home?&src=en&dest=hi` to the url [Endpoint](<https://us-central1-ac215-project.cloudfunctions.net/simple-translate?text=Ready to go home?&src=en&dest=hi>)
 
+
+<hr> 
+
+<hr> 
 ## Running App in Cloud Run
 
 ### Setup Cloud Run (Service)
