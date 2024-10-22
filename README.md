@@ -112,6 +112,11 @@ googletrans==4.0.0rc1
     - text="Ready to go home?" src=en dest=hi, add `?text=Ready to go home?&src=en&dest=hi` to the url [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Ready to go home?&src=en&dest=hi>)
 
 
+
+<hr> 
+
+<hr> 
+
 ## Setup Cloud Run (Job + Service Account)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
 * Click the "+ Deploy Container" option and select "Job"
