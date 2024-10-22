@@ -87,7 +87,7 @@ googletrans==4.0.0rc1
 * If you have not enabled the required APIs, a popup will showup
 
 ### Deploy Container
-* Select the "Deploy one revision from an existing container image" and put in the image name: `dlops/simple-translate:latest`
+* Select the "Deploy one revision from an existing container image" and put in the image name: `dlops/simple-translate-http:latest`
 * Give you Cloud Run a `Service name`
 * Under Authentication, select "Allow unauthenticated invocations"
 * Click "CREATE" and the docker image will be deployed as a Cloud Run
