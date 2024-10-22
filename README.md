@@ -81,7 +81,7 @@ googletrans==4.0.0rc1
 
 ## Running App in Cloud Run
 
-### Setup Cloud Run
+### Setup Cloud Run (Service)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
 * Click the "+ CREATE SERVICE" button
 * If you have not enabled the required APIs, a popup will showup
@@ -106,4 +106,28 @@ googletrans==4.0.0rc1
     - text="Very cool concept" src=en dest=el, add `?text=Very cool concept&src=en&dest=el` to the url [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Very cool concept&src=en&dest=el>)
     - text="Ready to go home?" src=en dest=hi, add `?text=Ready to go home?&src=en&dest=hi` to the url [Endpoint](<https://simple-translate-run-ckilfntmda-uc.a.run.app?text=Ready to go home?&src=en&dest=hi>)
 
+
+### Setup Cloud Run (Job + Service Account)
+* In GCP go to [Cloud Run](https://console.cloud.google.com/run)
+* Click the "+ Deploy Container" option and select "Job"
+
+In the Create job screen fill in the following details:
+
+* Container Image URL: dlops/simple-translate-gemini
+* Job name: Give a unique job name
+* Expand the section for "Container(s), Volumes, Connections, Security"
+* Select "SECURITY" tab and pick the right "Service Account" that has access to Vertex AI (Gemini) API
+* Select the check box "Execute job immediately"
+
+Here are the details for creating a job:
+
+<img src="images/cloud-run-job-01.png"  width="700">
+
+This will run the simple-translate container using the default arguments. If you want to pass arguments:
+* Select "CONTAINER(S)" tab and in the SETTINGS area
+* For Container arguments type in: cli.py --text Ready+to+go+home?
+
+Here are the details for running a job with container arguments:
+
+<img src="images/cloud-run-job-02.png"  width="700">
 
