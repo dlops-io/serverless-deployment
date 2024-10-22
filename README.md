@@ -83,6 +83,7 @@ googletrans==4.0.0rc1
 <hr> 
 
 <hr> 
+
 ## Running App in Cloud Run
 
 ### Setup Cloud Run (Service)
