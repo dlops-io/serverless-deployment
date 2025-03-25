@@ -67,7 +67,7 @@ functions-framework==3.*
 googletrans==4.0.0rc1
 ```
 
-* Click on "DEPLOY" to deploy the code as a CLoud Function
+* Click on "Save and Deploy" to deploy the code as a CLoud Function
 * Deployment will take a few minutes to complete
 
 ### Test Cloud Function
