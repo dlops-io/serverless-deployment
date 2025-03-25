@@ -6,7 +6,7 @@ In this demo we use the Simple Translate App and deploy it to GCP using various 
 
 ### Setup Cloud Function
 * In GCP go to [Cloud Functions](https://console.cloud.google.com/functions)
-* Click the "+ CREATE FUNCTION" button
+* Click the "{...} Write a function" button
 * If you have not enabled the required APIs, a popup will showup as shown
 
 <img src="images/cloud-function-enable-apis.png"  width="500">
@@ -15,10 +15,11 @@ In this demo we use the Simple Translate App and deploy it to GCP using various 
 
 ### Create a Cloud Function
 * In the Create Cloud Function screen
-* Under the Configuration -> "Basics" section. Keep everything the default.
+* Under the Configuration -> "Service Name" add a name.
 * Under the Configuration -> "Trigger" section. Select "Allow unauthenticated invocations"
-* Click "NEXT" button at the bottom
-* Under the Code -> "Runtime", select "Python 3.10"
+* Under Endpoint URL -> "Runtime", select "Python 3.10"
+* Click "Create" button at the bottom
+* 
 * Replace the code in `main.py` with the following:
 ```
 import functions_framework
