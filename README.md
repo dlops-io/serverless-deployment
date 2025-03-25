@@ -89,7 +89,7 @@ googletrans==4.0.0rc1
 
 ### Setup Cloud Run (Service)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
-* Click the "+ CREATE SERVICE" button
+* Click the "Deploy container and pick "service"
 * If you have not enabled the required APIs, a popup will showup
 
 ### Deploy Container
