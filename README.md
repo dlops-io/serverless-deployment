@@ -14,10 +14,10 @@ In this demo we use the Simple Translate App and deploy it to GCP using various 
 * Enable the required APIs. Click "ENABLE"
 
 ### Create a Cloud Function
-* In the Create Cloud Function screen
-* Under the Configuration -> "Service Name" add a name.
-* Under the Configuration -> "Trigger" section. Select "Allow unauthenticated invocations"
+* In the Create Cloud Function screen (Create service)
+* Under the Configure -> "Service Name" add a name.
 * Under Endpoint URL -> "Runtime", select "Python 3.10"
+* Under the Configure -> "Trigger" section. Select "Allow unauthenticated invocations"
 * Click "Create" button at the bottom
 * 
 * Replace the code in `main.py` with the following:
@@ -89,7 +89,7 @@ googletrans==4.0.0rc1
 
 ### Setup Cloud Run (Service)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
-* Click the "Deploy container" and pick "service"
+* Click the "Deploy container" and pick "Service"
 * If you have not enabled the required APIs, a popup will showup
 
 ### Deploy Container
@@ -120,7 +120,7 @@ googletrans==4.0.0rc1
 
 ## Setup Cloud Run (Job + Service Account)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
-* Click the "+ Deploy Container" option and select "Job"
+* Click the "Deploy container" and pick "Job"
 
 In the Create job screen fill in the following details:
 
