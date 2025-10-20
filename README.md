@@ -5,7 +5,7 @@ In this demo we use the Simple Translate App and deploy it to GCP using various 
 ## Running App as Cloud Function
 
 ### Setup Cloud Function
-* In GCP go to [Cloud Functions](https://console.cloud.google.com/functions)
+* In GCP go to [Cloud Run -> Functions](https://console.cloud.google.com/functions)
 * Click the "{...} Write a function" button
 * If you have not enabled the required APIs, a popup will showup as shown
 
@@ -17,7 +17,7 @@ In this demo we use the Simple Translate App and deploy it to GCP using various 
 * In the Create Cloud Function screen (Create service)
 * Under the Configure -> "Service Name" add a name.
 * Under Endpoint URL -> "Runtime", select "Python 3.10"
-* Under the Configure -> "Trigger" section. Select "Allow unauthenticated invocations"
+* Under the Authentication section. Select "Allow public access"
 * Click "Create" button at the bottom
 * 
 * Replace the code in `main.py` with the following:
@@ -89,13 +89,13 @@ googletrans==4.0.0rc1
 
 ### Setup Cloud Run (Service)
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
-* Click the "Deploy container" and pick "Service"
+* Click the "Deploy container"
 * If you have not enabled the required APIs, a popup will showup
 
 ### Deploy Container
 * Select the "Deploy one revision from an existing container image" and put in the image name: `dlops/simple-translate-http:latest`
 * Give you Cloud Run a `Service name`
-* Under Authentication, select "Allow unauthenticated invocations"
+* Under Authentication, select "Allow public access"
 * Click "Create" and the docker image will be deployed as a Cloud Run
 * Your screen should look like this:
 <img src="images/cloud-run-create.png"  width="500">
