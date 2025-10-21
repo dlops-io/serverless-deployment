@@ -119,6 +119,10 @@ googletrans==4.0.0rc1
 <hr> 
 
 ## Setup Cloud Run (Job + Service Account)
+
+When we run our containerized app locally, we already have access to our credentials and environment variables — for example, API keys or service accounts mounted on our laptops. However, once we deploy the same container to the cloud, those local secrets are no longer available. To allow the container to securely access other Google Cloud services (like Vertex AI or Gemini), we must assign it a Service Account with the appropriate permissions. In this step, we’ll set up a Cloud Run Job and attach the correct Service Account so our app can authenticate and communicate with the required APIs.
+
+
 * In GCP go to [Cloud Run](https://console.cloud.google.com/run)
 * Click the "Deploy container" and pick "Job"
 
