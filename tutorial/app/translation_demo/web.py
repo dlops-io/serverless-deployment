@@ -1,8 +1,8 @@
-"""Part 2 UI; part 3 speech route remains explicitly unimplemented."""
+"""Part 2 translation UI and optional part 3 Vertex AI speech."""
 
 from flask import Flask, jsonify, render_template, request
 
-from .speech import synthesize
+from .speech import SpeechConfigurationError, SpeechProviderError, enabled, synthesize
 from .translation import LANGUAGES, translate, validate
 
 
@@ -12,7 +12,7 @@ def create_app():
 
     @app.get("/")
     def index():
-        return render_template("index.html", languages=LANGUAGES)
+        return render_template("index.html", languages=LANGUAGES, speech_enabled=enabled())
 
     def inputs():
         data = request.get_json(silent=True)
@@ -45,8 +45,12 @@ def create_app():
             return jsonify(error=str(exc)), 400
         try:
             audio, mime_type = synthesize(text, language)
-        except NotImplementedError as exc:
-            return jsonify(error=str(exc)), 501
-        return app.response_class(audio, mimetype=mime_type)
+        except ValueError as exc:
+            return jsonify(error=str(exc)), 400
+        except SpeechConfigurationError as exc:
+            return jsonify(error=str(exc)), 503
+        except SpeechProviderError as exc:
+            return jsonify(error=str(exc)), 502
+        return app.response_class(audio, mimetype=mime_type, headers={"Cache-Control": "no-store"})
 
     return app

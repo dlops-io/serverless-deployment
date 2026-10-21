@@ -85,9 +85,12 @@ has commands for ADC login, impersonation, permissions, quota-project setup, and
 credential mounts for local containers. No credentials belong in the image.
 Local success still needs a final check of deployed identity and networking.
 
-**Scaffold boundary:** the UI and adapter contract exist, but live Vertex AI speech
-is unimplemented and returns an explicit not-implemented response. The audio
-button is disabled by default. Do not present it as a working feature yet.
+**Implementation status:** the Vertex AI speech adapter and browser WAV playback
+are implemented and covered by offline checks. Enable speech explicitly after
+configuring ADC or a runtime identity. A real Vertex call and Cloud Run playback
+still need rehearsal; do not present those as verified yet. The
+[application guide](tutorial/app/README.md#create-the-runtime-identity-console-or-cli)
+shows both console setup and equivalent service-account/IAM CLI commands.
 
 ## Part 4: make a translated audio edition as a job
 
@@ -139,8 +142,8 @@ work. Rehearse resource limits, task timeout, and retries explicitly. Start with
 one passage sequentially. Processing independent passages in parallel is a
 stretch goal; splitting a poem into isolated lines can lose translation context.
 
-**Scaffold boundary:** the batch CLI has a `--plan` mode. Actual speech and uploads
-are unimplemented. The old tutorial's Gemini job describes **one translation**,
+**Scaffold boundary:** the batch CLI has a `--plan` mode. Actual batch execution and uploads
+are unimplemented; the web speech adapter is implemented. The old tutorial's Gemini job describes **one translation**,
 not batch processing. Its separate published image has not been inspected here.
 
 ## Implementation and publication checklist
@@ -149,7 +152,8 @@ not batch processing. Its separate published image has not been inspected here.
 - [x] Add a translation UI and shared code with service and batch entry points.
 - [x] Supply one Dockerfile for service and job; separate images are unnecessary.
 - [x] Verify the local container serves the UI and returns a real translation.
-- [ ] Implement Vertex AI speech and test browser audio playback.
+- [x] Implement Vertex AI speech and browser audio playback with offline contract checks.
+- [ ] Verify a real Vertex speech call and browser playback with the intended service account.
 - [ ] Implement bucket uploads and retry-safe artifact naming.
 - [ ] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
 - [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.

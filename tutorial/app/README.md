@@ -1,8 +1,9 @@
 # Application scaffold
 
 Part 2 has a translation UI and HTTP route. Live translation requires outbound
-network access and a functioning googletrans provider. Parts 3 and 4 are explicit
-integration boundaries: no speech or Cloud Storage uploads are implemented yet.
+network access and a functioning googletrans provider. Part 3 implements Vertex AI speech and browser WAV playback, enabled explicitly
+after configuring identity. Part 4 still has no Cloud Storage uploads or batch execution.
+Offline speech checks pass; a live Vertex call and cloud deployment are not yet verified.
 
 ## Local development
 
@@ -15,7 +16,7 @@ uv run python -m translation_demo serve
 
 Open `http://localhost:8080`. Test the same input that worked in part 1. The browser
 sends a JSON POST here; part 1 used URL query parameters. Explain that input-format
-change if showing the requests. The disabled audio button is a future feature.
+change if showing the requests. Audio stays disabled in part 2. Enable it after completing the part 3 setup below.
 
 Run offline checks:
 
@@ -36,9 +37,44 @@ development should have a faster loop: **edit → run locally → call the real 
 inspect the response**. Rebuilding and publishing an image belongs later.
 
 The translation provider in part 2 does not use GCP credentials. The following
-setup applies when implementing Vertex AI speech and Cloud Storage uploads.
-Those integrations are still unimplemented in this scaffold; authentication setup
-alone will not enable the speech button or make the batch command execute.
+setup applies to Vertex AI speech and, later, Cloud Storage uploads.
+Speech is implemented; batch uploads remain unimplemented.
+
+### Create the runtime identity: console or CLI
+
+In the console, open **IAM & Admin → Service Accounts → Create service account**.
+Create a dedicated translation demo account and grant **Vertex AI User** on your
+project. On that service account's **Permissions** tab, grant your developer user
+**Service Account Token Creator**. These are two different grants: the runtime
+account can call Vertex AI; the developer can request temporary credentials as it.
+The person deploying Cloud Run also needs permission to attach this account
+(`iam.serviceAccounts.actAs`, commonly via Service Account User).
+
+Equivalent CLI setup, run by an identity authorized to create accounts and edit IAM:
+
+```bash
+PROJECT_ID=YOUR_PROJECT_ID
+DEVELOPER_EMAIL=YOUR_GOOGLE_ACCOUNT_EMAIL
+SERVICE_ACCOUNT_NAME=translation-demo
+SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+
+gcloud services enable aiplatform.googleapis.com iamcredentials.googleapis.com \
+  --project="$PROJECT_ID"
+gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" \
+  --display-name="Translation demo runtime" --project="$PROJECT_ID"
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+  --role=roles/aiplatform.user --condition=None
+gcloud iam service-accounts add-iam-policy-binding "$SERVICE_ACCOUNT_EMAIL" \
+  --member="user:$DEVELOPER_EMAIL" \
+  --role=roles/iam.serviceAccountTokenCreator --project="$PROJECT_ID" --condition=None
+```
+
+Console and CLI change the same cloud resources. These commands are also useful
+for reproducible setup scripts and coding agents acting with your authorization.
+They do not give an agent permissions beyond the identity running the commands.
+Do not grant Storage access to the interactive web service; part 4 will introduce
+that separately for its job identity.
 
 ### Choose a local identity
 
@@ -81,6 +117,32 @@ of Git, build contexts, and container images. On Cloud Run, attach the runtime
 service account and let ADC obtain its credentials there. Do not upload your
 local ADC file to configure the deployed service.
 
+### Enable and test short speech
+
+After configuring ADC (prefer impersonation above), run:
+
+```bash
+export ENABLE_SPEECH=true
+export GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID
+export GOOGLE_CLOUD_LOCATION=us-central1
+uv run python -m translation_demo serve
+```
+
+Translate a short sentence, then select **Play audio**. The server calls
+`gemini-2.5-flash-tts` through Vertex AI using ADC, wraps the returned mono 24 kHz
+16-bit PCM in a WAV header, and returns it directly to the browser. No bucket is
+used. The browser retains the audio for replay until the next translation.
+`VERTEX_TTS_MODEL` and `VERTEX_TTS_VOICE` can override the defaults (voice: `Kore`).
+Model location is independent of the Cloud Run region. Verify model availability
+and language support for your selected location. The demo limits speech input to
+4,000 UTF-8 bytes and reports credential, permission, and provider failures.
+
+For Cloud Run, supply these environment settings and attach the runtime service
+account. Do not run an interactive ADC login inside the deployed container.
+The default remains `ENABLE_SPEECH=false` for part 2.
+
+[Gemini TTS format, models, and locations](https://docs.cloud.google.com/text-to-speech/docs/gemini-tts).
+
 ### Iterate before publishing
 
 1. Run the application directly with `uv run python -m translation_demo serve`.
@@ -107,13 +169,15 @@ docker run --rm -p 8080:8080 \
   --mount "type=bind,source=${HOME}/.config/gcloud/application_default_credentials.json,target=/tmp/dev-adc.json,readonly" \
   -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/dev-adc.json \
   -e GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID \
+  -e ENABLE_SPEECH=true \
+  -e GOOGLE_CLOUD_LOCATION=us-central1 \
   translation-demo:dev
 ```
 
 Adjust the host path if your gcloud credential location differs. Matching the
 container UID to your host user permits reading a user-private credential file.
 Do not make the file world-readable to work around permissions. Supply any
-additional model/region settings expected by the eventual speech adapter.
+additional model/voice settings if overriding the speech adapter defaults.
 These are development-only mounts; use an attached service account in Cloud Run.
 
 Troubleshooting: unauthenticated means credentials were not found or accepted;

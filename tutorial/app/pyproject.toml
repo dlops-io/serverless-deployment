@@ -5,8 +5,10 @@ description = "Development scaffold for a four-part serverless tutorial"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "flask>=3.1,<4",
+    "google-auth>=2.40,<3",
     "googletrans==4.0.0rc1",
     "gunicorn>=23,<27",
+    "requests>=2.32,<3",
 ]
 
 [build-system]

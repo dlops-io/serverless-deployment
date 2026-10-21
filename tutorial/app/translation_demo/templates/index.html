@@ -22,6 +22,8 @@
     button {font:inherit; padding:11px 20px; border:0; border-radius:7px; background:var(--accent); color:var(--base); cursor:pointer;}
     button:hover:not(:disabled) {background:#b4befe;}
     button:disabled {background:var(--surface); color:#a6adc8; cursor:default;} #status {min-height:1.5em; color:#a6e3a1;}
+    #status[data-error="true"] {color:#f38ba8;} audio {display:block; width:100%; margin-top:20px;}
+    audio[hidden] {display:none;}
     .small {font-size:.9rem; color:var(--muted);} @media(max-width:650px){.panels{grid-template-columns:1fr;}}
   </style>
 </head>
@@ -46,18 +48,30 @@
       </section>
     </div>
     <button id="translate-button" type="submit">Translate</button>
-    <button type="button" disabled title="Part 3 is not implemented yet">Play audio · coming in part 3</button>
+    <button id="speech-button" type="button" disabled {% if speech_enabled %}title="Translate some text first"{% else %}title="Enable speech with Vertex AI credentials in part 3"{% endif %}>{% if speech_enabled %}Play audio{% else %}Play audio · enable in part 3{% endif %}</button>
+    <audio id="speech-audio" controls hidden aria-label="Spoken translation"></audio>
     <p id="status" role="status" aria-live="polite"></p>
   </form>
-  <p class="small">Translation uses an external provider. Speech and batch output are planned extensions.</p>
+  <p class="small">Translation uses an external provider.{% if speech_enabled %} Speech uses Vertex AI.{% else %} Speech is disabled in this deployment.{% endif %}</p>
 </main>
 <script>
   const form = document.getElementById('translation-form');
   const button = document.getElementById('translate-button');
   const status = document.getElementById('status');
   const output = document.getElementById('translated-text');
+  const speechButton = document.getElementById('speech-button');
+  const audio = document.getElementById('speech-audio');
+  const speechEnabled = {{ speech_enabled | tojson }};
+  let translated = null;
+  let audioUrl = null;
+  function resetAudio() {
+    audio.pause(); audio.removeAttribute('src'); audio.hidden = true;
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl = null; speechButton.disabled = true;
+  }
   form.addEventListener('submit', async (event) => {
-    event.preventDefault(); button.disabled = true; output.value = ''; status.textContent = 'Translating…';
+    event.preventDefault(); resetAudio(); translated = null;
+    button.disabled = true; output.value = ''; status.dataset.error = 'false'; status.textContent = 'Translating…';
     try {
       const response = await fetch('/api/translate', {
         method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -67,9 +81,28 @@
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Translation failed.');
-      output.value = result.text; status.textContent = 'Translation complete.';
-    } catch (error) {status.textContent = error.message;}
+      output.value = result.text; translated = {text:result.text, dest:result.dest};
+      speechButton.disabled = !speechEnabled; status.textContent = 'Translation complete.';
+    } catch (error) {status.dataset.error = 'true'; status.textContent = error.message;}
     finally {button.disabled = false;}
+  });
+  speechButton.addEventListener('click', async () => {
+    if (!translated) return;
+    if (audioUrl) {audio.play().catch(() => {status.textContent = 'Use the audio controls to play.';}); return;}
+    speechButton.disabled = true; button.disabled = true;
+    status.dataset.error = 'false'; status.textContent = 'Generating speech…';
+    try {
+      const response = await fetch('/api/speech', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(translated)
+      });
+      if (!response.ok) {
+        const result = await response.json(); throw new Error(result.error || 'Speech generation failed.');
+      }
+      audioUrl = URL.createObjectURL(await response.blob()); audio.src = audioUrl; audio.hidden = false;
+      status.textContent = 'Audio ready.';
+      audio.play().catch(() => {status.textContent = 'Audio ready. Press play in the audio controls.';});
+    } catch (error) {status.dataset.error = 'true'; status.textContent = error.message;}
+    finally {button.disabled = false; speechButton.disabled = !translated;}
   });
 </script>
 </body>

@@ -1,4 +1,5 @@
 import io
+import os
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
@@ -31,9 +32,10 @@ class ApplicationContracts(unittest.TestCase):
                 self.assertEqual(self.client.post("/api/translate", json=payload).status_code, 400)
         provider.assert_not_called()
 
+    @patch.dict(os.environ, {"ENABLE_SPEECH": "false"})
     def test_speech_does_not_fake_success(self):
         response = self.client.post("/api/speech", json={"text": "Bonjour", "src": "en", "dest": "fr"})
-        self.assertEqual(response.status_code, 501)
+        self.assertEqual(response.status_code, 503)
 
     def test_batch_plan_makes_no_provider_calls(self):
         with patch("translation_demo.translation.translate") as translate, patch("translation_demo.speech.synthesize") as speech:
