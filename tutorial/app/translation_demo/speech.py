@@ -105,7 +105,7 @@ def synthesize(text: str, language: str) -> tuple[bytes, str]:
         )
         with AuthorizedSession(credentials) as session:
             response = session.post(url, json=payload, timeout=(10, 75))
-    except GoogleAuthError as exc:
+    except (GoogleAuthError, OSError) as exc:
         raise SpeechConfigurationError("Google credentials are unavailable. Configure local ADC or attach an authorized runtime service account.") from exc
     except requests.RequestException as exc:
         raise SpeechProviderError("The speech request failed or timed out. Try a shorter passage.") from exc

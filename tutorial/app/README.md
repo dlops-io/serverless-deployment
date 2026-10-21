@@ -3,7 +3,10 @@
 Part 2 has a translation UI and HTTP route. Live translation requires outbound
 network access and a functioning googletrans provider. Part 3 implements Vertex AI speech and browser WAV playback, enabled explicitly
 after configuring identity. Part 4 still has no Cloud Storage uploads or batch execution.
-Offline speech checks pass; a live Vertex call and cloud deployment are not yet verified.
+Offline speech checks pass. A real Vertex call using impersonated service-account
+ADC has returned valid WAV audio both from local Python and through the container
+HTTP route. Browser playback and cloud deployment
+still need verification.
 
 ## Local development
 
@@ -180,6 +183,9 @@ docker run --rm -p 8080:8080 \
 
 Adjust the host path if your gcloud credential location differs. Matching the
 container UID to your host user permits reading a user-private credential file.
+With rootless Docker, the host user may map to container UID 0 instead; inspect
+the mounted file ownership inside the container and use `--user 0:0` for this
+local rootless development run if needed. Do not change the production image user.
 Do not make the file world-readable to work around permissions. Supply any
 additional model/voice settings if overriding the speech adapter defaults.
 These are development-only mounts; use an attached service account in Cloud Run.

@@ -87,7 +87,9 @@ Local success still needs a final check of deployed identity and networking.
 
 **Implementation status:** the Vertex AI speech adapter and browser WAV playback
 are implemented and covered by offline checks. Enable speech explicitly after
-configuring ADC or a runtime identity. A real Vertex call and Cloud Run playback
+configuring ADC or a runtime identity. A real Vertex call using impersonated ADC
+has returned valid WAV audio both from local Python and through the local
+container HTTP route. Browser playback and Cloud Run deployment
 still need rehearsal; do not present those as verified yet. The
 [application guide](tutorial/app/README.md#create-the-runtime-identity-console-or-cli)
 shows both console setup and equivalent service-account/IAM CLI commands.
