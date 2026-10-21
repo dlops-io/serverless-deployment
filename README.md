@@ -146,7 +146,8 @@ are supplied as configuration. No student rebuild is needed.
 
 The [job walkthrough](docs/job-workflow.md) gives console arguments, bucket and
 identity setup, and CLI upload/execute/download commands. Storage input and output
-are implemented; the convenience helper remains optional future work.
+are implemented. The optional [local helper](docs/job-workflow.md#one-command-local-helper)
+uploads a local passage, waits for the job, and downloads its output files.
 
 A short classroom task illustrates the same pattern as unattended overnight
 work. Rehearse resource limits, task timeout, and retries explicitly. Start with
@@ -170,7 +171,7 @@ version generates a saved audio edition of a short passage.
 - [x] Verify a real Vertex speech call and instructor-confirmed browser playback locally and on Cloud Run.
 - [x] Implement bucket uploads and unique attempt folders with create-only writes.
 - [x] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
-- [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
+- [x] Add the upload/execute/download helper with offline failure checks.
 - [x] Verify public UI, translation, and speech routes with the attached runtime identity in the teaching project.
 - [x] Build and smoke-test a Linux AMD64 image locally.
 - [x] Push a versioned public image to Docker Hub and verify anonymous pull.

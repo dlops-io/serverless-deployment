@@ -142,18 +142,47 @@ CLI authentication uses the gcloud caller's login, not necessarily the ADC used
 by locally running Python. In the cloud, the job obtains ADC from its attached
 runtime identity. No developer credential files are uploaded with the text.
 
-## Optional convenience helper
+## One-command local helper
 
-After demonstrating the two explicit submission commands, a local helper could:
+After showing the explicit upload and execute commands, use the standard-library
+Python helper from the repository root:
 
-1. Accept a local text-file path, target language, project, region, job, and buckets.
-2. Allocate a fresh run prefix and upload the file.
-3. Execute the existing job with that input URI and output prefix.
-4. Report execution status and the output location; optionally download results.
+```bash
+python tutorial/run_job.py ./passage.txt \
+  --project=YOUR_PROJECT_ID --region=northamerica-northeast2 \
+  --job=translation-audio \
+  --input-bucket=YOUR_INPUT_BUCKET --output-bucket=YOUR_OUTPUT_BUCKET \
+  --src=en --dest=fr --download-dir=./results
+```
 
-It should stop on upload or execution failure and never silently overwrite output.
-This helper is a convenience layer around GCP CLI calls, not another deployed
-web service. Implement and test it only after the underlying workflow works.
+Supply bucket names without `gs://`. The helper allocates a fresh run prefix,
+uploads the passage, executes the existing job with argument overrides, waits
+for successful completion, and downloads the result folder. It checks for a
+completion manifest and the translated text and audio files. The job still reads
+from and writes to Storage; the helper does not send the local file through the
+Cloud Run execute API or add an HTTP endpoint.
+
+The downloaded folder contains the job's unique attempt folder with
+`translated.txt`, `speech.wav`, and `manifest.json`. Open `speech.wav` in a local
+audio player. `--no-download` leaves outputs in the bucket. `--dry-run` prints the
+underlying commands without network calls or file writes. `--help` lists options.
+
+The helper needs Python and an installed, signed-in gcloud CLI, not the app's
+Python dependencies or local ADC. Your CLI identity must be allowed to upload,
+execute with overrides, and read outputs. The runtime job identity keeps its
+separate API and bucket permissions. No credential files are uploaded.
+
+The helper stops if upload or execution fails and does not run later steps.
+Cloud inputs/outputs and incomplete local downloads remain for inspection; it
+never automatically deletes them. A retry of the helper allocates a new run.
+Keep the console walkthrough and explicit CLI commands visible before introducing
+this convenience layer.
+
+Offline helper checks, from the repository root:
+
+```bash
+python -m unittest discover -s tutorial/tests -v
+```
 
 References: [storage cp](https://docs.cloud.google.com/sdk/gcloud/reference/storage/cp),
 [jobs execute](https://docs.cloud.google.com/sdk/gcloud/reference/run/jobs/execute).

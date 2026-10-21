@@ -46,6 +46,14 @@ A second terminal submission uploaded a different local text file under
 (including Spanish as the destination), and also completed successfully.
 This verifies the upload-then-execute workflow without creating a new job.
 
+The local helper was then tested end to end with a new short text file. One
+invocation uploaded it, executed the cloud job with its input/output paths,
+waited for successful completion, downloaded the resulting attempt folder, and
+verified that a completion manifest, translated text, and WAV audio were present.
+The downloaded WAV was separately inspected as 24 kHz audio. Five offline helper
+checks cover dry-run, upload failure, execution failure, successful download,
+and skipping download. The seventeen application checks remain separate.
+
 ## Cleanup after teaching
 
 Keep the resources available for rehearsal until the instructor is finished.
