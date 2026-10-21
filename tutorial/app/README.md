@@ -44,7 +44,8 @@ Speech is implemented; batch uploads remain unimplemented.
 
 In the console, open **IAM & Admin → Service Accounts → Create service account**.
 Create a dedicated translation demo account and grant **Vertex AI User** on your
-project. On that service account's **Permissions** tab, grant your developer user
+project. Also grant **Service Usage Consumer** so it can use this project as the
+API quota project. On that service account's **Permissions** tab, grant your developer user
 **Service Account Token Creator**. These are two different grants: the runtime
 account can call Vertex AI; the developer can request temporary credentials as it.
 The person deploying Cloud Run also needs permission to attach this account
@@ -65,6 +66,9 @@ gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" \
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
   --role=roles/aiplatform.user --condition=None
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+  --role=roles/serviceusage.serviceUsageConsumer --condition=None
 gcloud iam service-accounts add-iam-policy-binding "$SERVICE_ACCOUNT_EMAIL" \
   --member="user:$DEVELOPER_EMAIL" \
   --role=roles/iam.serviceAccountTokenCreator --project="$PROJECT_ID" --condition=None
