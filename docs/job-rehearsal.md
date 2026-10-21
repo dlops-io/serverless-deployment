@@ -41,6 +41,11 @@ The [student walkthrough](job-workflow.md) gives the full setup, console argumen
 fields, and CLI upload/execute/download sequence. A console button-click run has
 not been claimed as verified; the underlying job was executed through gcloud.
 
+A second terminal submission uploaded a different local text file under
+`rehearsal-002`, executed the existing job with complete argument overrides
+(including Spanish as the destination), and also completed successfully.
+This verifies the upload-then-execute workflow without creating a new job.
+
 ## Cleanup after teaching
 
 Keep the resources available for rehearsal until the instructor is finished.
