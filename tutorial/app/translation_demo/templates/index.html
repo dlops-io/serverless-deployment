@@ -5,18 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Translate · AC215</title>
   <style>
-    body {font: 17px system-ui, sans-serif; color:#182a38; background:#f4f7fa; margin:0;}
+    :root {color-scheme:dark; --base:#1e1e2e; --mantle:#181825; --surface:#313244;
+           --border:#45475a; --text:#cdd6f4; --muted:#bac2de; --accent:#cba6f7; --focus:#89b4fa;}
+    body {font: 17px system-ui, sans-serif; color:var(--text); background:var(--base); margin:0;}
     main {max-width:1000px; margin:7vh auto; padding:24px;}
     h1 {font-size:2.4rem; margin-bottom:.3em;} p {line-height:1.5;}
     .panels {display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:28px 0 20px;}
-    section {background:white; border:1px solid #d6dfe8; border-radius:12px; padding:20px;}
+    section {background:var(--mantle); border:1px solid var(--border); border-radius:12px; padding:20px;}
     label {display:block; font-weight:600; margin-bottom:10px;}
-    select {width:100%; margin-bottom:16px; padding:10px; font:inherit;}
-    textarea {width:100%; height:210px; box-sizing:border-box; resize:vertical; border:1px solid #c0cad4;
-              border-radius:6px; padding:12px; font:inherit; line-height:1.5;}
-    button {font:inherit; padding:11px 20px; border:0; border-radius:7px; background:#145caa; color:white; cursor:pointer;}
-    button:disabled {background:#8b99a8; cursor:default;} #status {min-height:1.5em;}
-    .small {font-size:.9rem; color:#4e6173;} @media(max-width:650px){.panels{grid-template-columns:1fr;}}
+    select {width:100%; margin-bottom:16px; padding:10px; font:inherit; color:var(--text);
+            background:var(--surface); border:1px solid var(--border); border-radius:6px;}
+    textarea {width:100%; height:210px; box-sizing:border-box; resize:vertical; border:1px solid var(--border);
+              background:var(--base); color:var(--text); border-radius:6px; padding:12px; font:inherit; line-height:1.5;}
+    textarea::placeholder {color:#a6adc8;}
+    select:focus-visible, textarea:focus-visible, button:focus-visible {outline:2px solid var(--focus); outline-offset:3px;}
+    button {font:inherit; padding:11px 20px; border:0; border-radius:7px; background:var(--accent); color:var(--base); cursor:pointer;}
+    button:hover:not(:disabled) {background:#b4befe;}
+    button:disabled {background:var(--surface); color:#a6adc8; cursor:default;} #status {min-height:1.5em; color:#a6e3a1;}
+    .small {font-size:.9rem; color:var(--muted);} @media(max-width:650px){.panels{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
