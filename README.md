@@ -46,6 +46,14 @@ boxes, source and destination language selectors, and a Translate button. Build
 and publish its image, then deploy the same image to a Cloud Run **service**.
 Repeat the same translation at the hosted URL.
 
+Students can use the public prebuilt image `cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f`.
+In **Cloud Run → Deploy container**, paste that image address, allow public
+invocation, and create the service. Leave `ENABLE_SPEECH` unset for part 2; no
+Google runtime credentials are needed for translation. In part 3, keep the same
+image, attach your own runtime service account, and set `ENABLE_SPEECH=true`,
+`GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID`, and `GOOGLE_CLOUD_LOCATION=us-central1`.
+The image contains no instructor credentials or project-specific configuration.
+
 Motivation: "It works on my laptop; how do I share it?" HTML does not inherently
 require a custom image. A browser page stays visible without its application
 instance continuously running. Inspect the image reference, revision, and logs.
@@ -162,13 +170,13 @@ not batch processing. Its separate published image has not been inspected here.
 - [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
 - [x] Verify public UI, translation, and speech routes with the attached runtime identity in the teaching project.
 - [x] Build and smoke-test a Linux AMD64 image locally.
-- [ ] Push a versioned image to Docker Hub or Artifact Registry.
-- [ ] Record its tested digest and replace documentation placeholders.
+- [x] Push a versioned public image to Docker Hub and verify anonymous pull.
+- [x] Record the tested image digest and add the public image address.
 - [ ] Rehearse all parts, output retrieval, and resource cleanup.
 
-**The development image has been published privately in the teaching project’s
-Artifact Registry and tested on Cloud Run.** This is not yet a student-accessible
-Docker Hub image. See the [deployment record](docs/cloud-run-rehearsal.md).
+**The image is published publicly on Docker Hub and anonymous pull is verified.**
+The earlier private Artifact Registry copy remains a rehearsal artifact. See the
+[deployment record](docs/cloud-run-rehearsal.md).
 See the [application scaffold guide](tutorial/app/README.md) for local commands.
 
 An [independent Opus 5.5 teaching-flow review](docs/flow-review-opus55.md) identifies

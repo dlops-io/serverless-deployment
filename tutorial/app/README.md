@@ -223,16 +223,22 @@ In Cloud Run job settings the **command** would be `python` and the individual
 whole command into one argument field. Remove `--plan` only after real execution
 is implemented and rehearsed.
 
-## Image publication: teaching-project rehearsal
+## Public tutorial image
 
-The image has been published privately to the teaching project’s Artifact
-Registry and deployed successfully to Cloud Run; see the
-[rehearsal record](../../docs/cloud-run-rehearsal.md). A student-accessible registry
-address is still needed. Maintainers must choose that namespace and verify write
-access before publishing for students. Tag a tested image with an explicit version, push it, record its
-digest, and test deployment from that digest. Do not overwrite the original
-tutorial's `latest` image while developing this branch. No student-ready image
-address is claimed by these instructions.
+Use `cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f` for the classroom
+console walkthrough. Anonymous pull has been verified. The pinned digest is
+`sha256:1837fa5fe52744d22847d9899b9a294eff32141c5f7289af99ba2f9749b69a56`.
+
+```bash
+docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f
+```
+
+Speech remains disabled until part 3 credentials and environment settings are
+provided. The job remains a scaffold; publishing the image does not implement
+batch execution or Storage input/output. See the
+[rehearsal record](../../docs/cloud-run-rehearsal.md).
+The original tutorial's `latest` image was not changed. Future builds should use
+a new explicit version tag and record their tested digest.
 
 Students can follow the final tutorial using prebuilt images. These source files,
 the Dockerfile, and CLI are available for optional inspection; reading them is
