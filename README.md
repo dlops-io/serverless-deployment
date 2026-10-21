@@ -46,7 +46,7 @@ boxes, source and destination language selectors, and a Translate button. Build
 and publish its image, then deploy the same image to a Cloud Run **service**.
 Repeat the same translation at the hosted URL.
 
-Students can use the public prebuilt image `cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f`.
+Students can use the public prebuilt image `cgumb/ac215-translation-demo:lecture14-batch-50d8201`.
 In **Cloud Run → Deploy container**, paste that image address, allow public
 invocation, and create the service. Leave `ENABLE_SPEECH` unset for part 2; no
 Google runtime credentials are needed for translation. In part 3, keep the same
@@ -99,7 +99,7 @@ configuring ADC or a runtime identity. A real Vertex call using impersonated ADC
 has returned valid WAV audio both from local Python and through the local
 container HTTP route. The instructor confirmed local browser playback. The deployed Cloud Run UI,
 translation route, and speech route have also returned successfully using the
-attached runtime identity. Cloud browser playback still needs a manual check. The
+attached runtime identity. The instructor also confirmed cloud browser playback. The
 [application guide](tutorial/app/README.md#create-the-runtime-identity-console-or-cli)
 shows both console setup and equivalent service-account/IAM CLI commands.
 
@@ -144,18 +144,21 @@ are supplied as configuration. No student rebuild is needed.
    optionally download results. It must not imply the job-launch command itself
    automatically uploads local files.
 
-The [job walkthrough design](docs/job-workflow.md) records the proposed console
-arguments and CLI sequence. The storage-input option and helper remain work to
-implement, not supported commands in the current application scaffold.
+The [job walkthrough](docs/job-workflow.md) gives console arguments, bucket and
+identity setup, and CLI upload/execute/download commands. Storage input and output
+are implemented; the convenience helper remains optional future work.
 
 A short classroom task illustrates the same pattern as unattended overnight
 work. Rehearse resource limits, task timeout, and retries explicitly. Start with
 one passage sequentially. Processing independent passages in parallel is a
 stretch goal; splitting a poem into isolated lines can lose translation context.
 
-**Scaffold boundary:** the batch CLI has a `--plan` mode. Actual batch execution and uploads
-are unimplemented; the web speech adapter is implemented. The old tutorial's Gemini job describes **one translation**,
-not batch processing. Its separate published image has not been inspected here.
+**Implementation status:** batch execution reuses translation and speech, reads
+UTF-8 input from Storage or a packaged file, and creates text/audio plus a
+completion manifest in a unique attempt folder. Offline checks cover failures,
+create-only uploads, and download generation consistency. The first cloud execution completed successfully and saved its outputs; see the
+[job rehearsal record](docs/job-rehearsal.md). The old tutorial’s Gemini job performed one translation; this
+version generates a saved audio edition of a short passage.
 
 ## Implementation and publication checklist
 
@@ -164,9 +167,9 @@ not batch processing. Its separate published image has not been inspected here.
 - [x] Supply one Dockerfile for service and job; separate images are unnecessary.
 - [x] Verify the local container serves the UI and returns a real translation.
 - [x] Implement Vertex AI speech and browser audio playback with offline contract checks.
-- [ ] Verify a real Vertex speech call and browser playback with the intended service account.
-- [ ] Implement bucket uploads and retry-safe artifact naming.
-- [ ] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
+- [x] Verify a real Vertex speech call and instructor-confirmed browser playback locally and on Cloud Run.
+- [x] Implement bucket uploads and unique attempt folders with create-only writes.
+- [x] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
 - [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
 - [x] Verify public UI, translation, and speech routes with the attached runtime identity in the teaching project.
 - [x] Build and smoke-test a Linux AMD64 image locally.
@@ -177,7 +180,8 @@ not batch processing. Its separate published image has not been inspected here.
 **The image is published publicly on Docker Hub and anonymous pull is verified.**
 The earlier private Artifact Registry copy remains a rehearsal artifact. See the
 [deployment record](docs/cloud-run-rehearsal.md).
-See the [application scaffold guide](tutorial/app/README.md) for local commands.
+See the [application guide](tutorial/app/README.md) for local commands.
 
 An [independent Opus 5.5 teaching-flow review](docs/flow-review-opus55.md) identifies
-further sequencing improvements. Its recommendations are recorded, not yet applied.
+further sequencing improvements. Some have informed the updated setup and local
+development sections; the report remains available for later lecture refinements.

@@ -2,8 +2,9 @@
 
 The instructor confirmed local translation and browser audio playback. Live cloud
 checks then returned HTTP 200 for the UI, translation, and speech. The speech
-response was valid mono 24 kHz WAV. Cloud browser playback is awaiting manual
-confirmation; this record does not claim the batch job is implemented.
+response was valid mono 24 kHz WAV. The instructor also confirmed cloud browser playback. This record describes the
+initial speech rehearsal; the subsequently implemented batch job and newer shared
+image are recorded in [the job rehearsal](job-rehearsal.md).
 
 - Project: `ac215-project`
 - Cloud Run service: `translation-demo`

@@ -40,7 +40,7 @@ INPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_INPUT_BUCKET
 OUTPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_OUTPUT_BUCKET
 JOB_ACCOUNT=translation-audio-job
 JOB_EMAIL="${JOB_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com"
-IMAGE=PUBLIC_IMAGE_ADDRESS
+IMAGE=cgumb/ac215-translation-demo:lecture14-batch-50d8201
 
 gcloud services enable run.googleapis.com aiplatform.googleapis.com storage.googleapis.com \
   --project="$PROJECT_ID"

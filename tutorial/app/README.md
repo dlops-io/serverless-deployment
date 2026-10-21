@@ -1,13 +1,14 @@
-# Application scaffold
+# Translation application
 
 Part 2 has a translation UI and HTTP route. Live translation requires outbound
 network access and a functioning googletrans provider. Part 3 implements Vertex AI speech and browser WAV playback, enabled explicitly
-after configuring identity. Part 4 still has no Cloud Storage uploads or batch execution.
+after configuring identity. Part 4 reads a UTF-8 passage and saves translated text, WAV audio, and a completion
+manifest to private Cloud Storage, then exits.
 Offline speech checks pass. A real Vertex call using impersonated service-account
 ADC has returned valid WAV audio both from local Python and through the container
 HTTP route. Local browser playback was confirmed by the instructor. The deployed Cloud Run
-UI, translation route, and speech route also pass live checks; manual cloud
-browser playback remains to be checked.
+UI, translation route, and speech route also pass live checks; the instructor also confirmed cloud
+browser playback.
 
 ## Local development
 
@@ -32,7 +33,9 @@ uv run python -m translation_demo batch --plan \
 ```
 
 The plan command makes no API calls, creates no files, and uploads nothing.
-Without `--plan`, the scaffold exits unsuccessfully rather than pretending to run.
+Without `--plan`, batch execution calls the real providers and uploads outputs,
+requiring speech configuration and Storage permissions. See the
+[job walkthrough](../../docs/job-workflow.md).
 
 ## Local development against GCP
 
@@ -42,7 +45,7 @@ inspect the response**. Rebuilding and publishing an image belongs later.
 
 The translation provider in part 2 does not use GCP credentials. The following
 setup applies to Vertex AI speech and, later, Cloud Storage uploads.
-Speech is implemented; batch uploads remain unimplemented.
+Speech, Storage input, and batch uploads are implemented.
 
 ### Create the runtime identity: console or CLI
 
@@ -220,22 +223,22 @@ docker run --rm translation-demo:dev \
 
 In Cloud Run job settings the **command** would be `python` and the individual
 **arguments** would start with `-m`, `translation_demo`, `batch`. Do not paste the
-whole command into one argument field. Remove `--plan` only after real execution
-is implemented and rehearsed.
+whole command into one argument field. Remove `--plan` for real execution after setting up the job identity and bucket
+permissions. A failing operation produces a nonzero exit status.
 
 ## Public tutorial image
 
-Use `cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f` for the classroom
+Use `cgumb/ac215-translation-demo:lecture14-batch-50d8201` for the classroom
 console walkthrough. Anonymous pull has been verified. The pinned digest is
-`sha256:1837fa5fe52744d22847d9899b9a294eff32141c5f7289af99ba2f9749b69a56`.
+`sha256:a1d4858aca190421b8aabeb0d5fcc6fda0d0902486ca5f34319adcf42453c6e6`.
 
 ```bash
-docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-ui-speech-4096c0f
+docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-batch-50d8201
 ```
 
 Speech remains disabled until part 3 credentials and environment settings are
-provided. The job remains a scaffold; publishing the image does not implement
-batch execution or Storage input/output. See the
+provided. The same image can run the implemented batch command, but real execution needs
+its own job identity and bucket settings. See the
 [rehearsal record](../../docs/cloud-run-rehearsal.md).
 The original tutorial's `latest` image was not changed. Future builds should use
 a new explicit version tag and record their tested digest.
