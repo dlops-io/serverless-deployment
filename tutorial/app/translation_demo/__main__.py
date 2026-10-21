@@ -10,8 +10,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("serve", help="Start the HTTP service")
-    batch = commands.add_parser("batch", help="Plan the proposed translated audio job")
-    batch.add_argument("--text-file", type=Path, required=True)
+    batch = commands.add_parser("batch", help="Translate a passage, generate speech, save outputs, and exit")
+    source = batch.add_mutually_exclusive_group(required=True)
+    source.add_argument("--text-file", type=Path, help="A UTF-8 file available inside the container")
+    source.add_argument("--input-uri", help="A UTF-8 object in Cloud Storage")
     batch.add_argument("--src", default="en")
     batch.add_argument("--dest", default="fr")
     batch.add_argument("--output-uri", required=True, help="A fresh gs://bucket/prefix")
@@ -23,28 +25,41 @@ def main(argv=None):
                               "--workers", "1", "--threads", "4", "--timeout", "90",
                               "translation_demo.web:create_app()"])
 
-    from .translation import validate
+    from .translation import validate, translate
+    from .speech import synthesize
+    from .storage import split_uri, read_text, save_artifacts
 
     try:
-        text = args.text_file.read_text(encoding="utf-8")
-        validate(text, args.src, args.dest)
+        split_uri(args.output_uri)
+        if args.input_uri:
+            split_uri(args.input_uri)
+        # A remote plan deliberately does not download its input or look up ADC.
+        text = None if args.input_uri else args.text_file.read_text(encoding="utf-8")
+        validate(text if text is not None else "Planned remote input", args.src, args.dest)
     except (OSError, ValueError) as exc:
         parser.error(str(exc))
-    if not args.output_uri.startswith("gs://") or len(args.output_uri[5:].split("/", 1)) != 2:
-        parser.error("Use an output URI of the form gs://bucket/fresh-prefix")
-    bucket, prefix = args.output_uri[5:].split("/", 1)
-    if not bucket or not prefix.strip("/"):
-        parser.error("Both an output bucket and a fresh prefix are required")
-    if not args.plan:
-        parser.error("Batch execution is not implemented yet; use --plan. No API calls or uploads were made.")
-    print(json.dumps({
-        "status": "plan_only", "input_characters": len(text),
-        "source_language": args.src, "destination_language": args.dest,
-        "output_uri": args.output_uri,
-        "steps": ["Translate the complete passage", "Synthesize speech with Vertex AI",
-                  "Save translated text and audio to Cloud Storage", "Exit"],
-        "implemented": False,
-    }, indent=2))
+    if args.plan:
+        print(json.dumps({
+            "status": "plan_only", "input_characters": len(text) if text is not None else None,
+            "input_uri": args.input_uri, "source_language": args.src,
+            "destination_language": args.dest, "output_uri": args.output_uri,
+            "steps": ["Read the passage", "Translate the complete passage", "Synthesize speech with Vertex AI",
+                      "Save text, audio, and completion manifest to a unique attempt prefix", "Exit"],
+            "implemented": True,
+        }, indent=2))
+        return
+    try:
+        if text is None:
+            text = read_text(args.input_uri)
+        validate(text, args.src, args.dest)
+        translated = translate(text, args.src, args.dest)
+        audio, mime_type = synthesize(translated, args.dest)
+        result = save_artifacts(args.output_uri, translated, audio, mime_type)
+    except Exception as exc:
+        # A failing job must exit unsuccessfully so execution status is truthful.
+        print("Batch failed: " + str(exc), file=__import__("sys").stderr)
+        raise SystemExit(1) from exc
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

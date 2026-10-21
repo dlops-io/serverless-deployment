@@ -1,10 +1,9 @@
 # Part 4: console and CLI workflow design
 
-**Proposed interface, not yet implemented end to end.** The scaffold currently
-accepts `--text-file` for a file inside the image, and only plans work. The
-`--input-uri` option below must be implemented along with Vertex AI speech and
-artifact uploads before this becomes a runnable student tutorial. No helper or
-new published image is available yet.
+The batch CLI supports both `--text-file` (inside the container) and `--input-uri`
+(Cloud Storage). It reuses the web app's translation and Vertex speech adapters.
+`--plan` describes work without network calls. A real run writes translated text,
+WAV audio, and a completion manifest to a unique attempt folder, then exits.
 
 ## One-time setup in each student's project
 
@@ -26,6 +25,62 @@ The image is shared; students supply their own job/project/storage configuration
 The instructor can prepare their own resources before lecture, but students
 following along still need explicit setup instructions for theirs.
 
+### Equivalent setup commands
+
+Choose globally unique bucket names; the names below are placeholders. This is
+one-time setup, not work repeated for every passage. The instructor can show the
+same actions through **Storage → Buckets → Create** and each bucket's
+**Permissions → Grant access**. Use uniform bucket access and keep both buckets
+private. The public UI's runtime identity does not receive these Storage roles.
+
+```bash
+PROJECT_ID=YOUR_PROJECT_ID
+REGION=northamerica-northeast2
+INPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_INPUT_BUCKET
+OUTPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_OUTPUT_BUCKET
+JOB_ACCOUNT=translation-audio-job
+JOB_EMAIL="${JOB_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com"
+IMAGE=PUBLIC_IMAGE_ADDRESS
+
+gcloud services enable run.googleapis.com aiplatform.googleapis.com storage.googleapis.com \
+  --project="$PROJECT_ID"
+gcloud storage buckets create "gs://$INPUT_BUCKET" --project="$PROJECT_ID" \
+  --location="$REGION" --uniform-bucket-level-access --public-access-prevention
+gcloud storage buckets create "gs://$OUTPUT_BUCKET" --project="$PROJECT_ID" \
+  --location="$REGION" --uniform-bucket-level-access --public-access-prevention
+gcloud iam service-accounts create "$JOB_ACCOUNT" --project="$PROJECT_ID"
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$JOB_EMAIL" --role=roles/aiplatform.user --condition=None
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:$JOB_EMAIL" --role=roles/serviceusage.serviceUsageConsumer --condition=None
+gcloud storage buckets add-iam-policy-binding "gs://$INPUT_BUCKET" \
+  --member="serviceAccount:$JOB_EMAIL" --role=roles/storage.objectViewer
+gcloud storage buckets add-iam-policy-binding "gs://$OUTPUT_BUCKET" \
+  --member="serviceAccount:$JOB_EMAIL" --role=roles/storage.objectCreator
+```
+
+The deployer must also be able to attach the job account (Service Account User),
+and the caller needs Cloud Run execution permission. Executing with argument
+overrides requires `run.jobs.runWithOverrides`; Cloud Run Jobs Executor With
+Overrides supplies that role. These caller permissions are separate from what
+the container itself can do. A project administrator can grant these permissions
+when a student is not already authorized.
+
+Create the job after uploading its initial passage. In the console, use **Cloud
+Run → Jobs → Create job**, choose the image and runtime account, and enter command
+`python`. Set `ENABLE_SPEECH=true`, your `GOOGLE_CLOUD_PROJECT`, and model location
+`GOOGLE_CLOUD_LOCATION=us-central1`. Use one task, zero retries, and a five-minute
+task timeout for the initial rehearsal. The equivalent CLI is:
+
+```bash
+gcloud storage cp ./passage.txt "gs://$INPUT_BUCKET/run-001/passage.txt" --project="$PROJECT_ID"
+gcloud run jobs create translation-audio --project="$PROJECT_ID" --region="$REGION" \
+  --image="$IMAGE" --service-account="$JOB_EMAIL" --command=python \
+  --args="-m,translation_demo,batch,--input-uri,gs://$INPUT_BUCKET/run-001/passage.txt,--src,en,--dest,fr,--output-uri,gs://$OUTPUT_BUCKET/run-001/" \
+  --set-env-vars="ENABLE_SPEECH=true,GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_CLOUD_LOCATION=us-central1" \
+  --tasks=1 --max-retries=0 --task-timeout=300 --memory=512Mi --cpu=1
+```
+
 ## First, show a console execution
 
 Upload a text file to the input bucket using the Storage console. For the job,
@@ -45,9 +100,19 @@ fr
 gs://OUTPUT_BUCKET/run-001/
 ```
 
-Run it. Inspect execution status and logs, then retrieve translated text and
-audio from the output prefix. Do not expect the job to expose a web-app URL.
-Use a new prefix for every independently submitted run.
+Run it. Inspect execution status and logs, then retrieve `translated.txt`,
+`speech.wav`, and `manifest.json` from the unique attempt folder under the output
+prefix. A manifest with `status: complete` is written last; missing manifests
+mean that an attempt did not finish, even if some files exist. Do not expect the job to expose a web-app URL.
+Use a new prefix for every independently submitted run. Every attempt also adds
+a unique child folder and creates objects with generation preconditions, so
+retries cannot overwrite earlier files. Retries can still duplicate paid API
+work and leave incomplete attempt folders; they do not provide exactly-once
+processing. Keep retries off for the first demo.
+
+Use a short UTF-8 passage. The demo accepts at most 5,000 source characters and
+4,000 UTF-8 bytes of translated speech input. It processes the passage as a whole,
+sequentially; arbitrary long documents and parallel chunking are future work.
 
 ## Then, run from the laptop terminal
 

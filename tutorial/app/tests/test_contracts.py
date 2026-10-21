@@ -46,11 +46,12 @@ class ApplicationContracts(unittest.TestCase):
             translate.assert_not_called()
             speech.assert_not_called()
 
-    def test_batch_execution_fails_explicitly_until_implemented(self):
+    @patch("translation_demo.translation.translate", side_effect=RuntimeError("Provider unavailable"))
+    def test_batch_execution_failure_exits_unsuccessfully(self, provider):
         with redirect_stdout(io.StringIO()), patch("sys.stderr", new_callable=io.StringIO):
             with self.assertRaises(SystemExit) as error:
                 main(["batch", "--text-file", "examples/passage.txt", "--output-uri", "gs://demo/fresh"])
-        self.assertEqual(error.exception.code, 2)
+        self.assertEqual(error.exception.code, 1)
 
 
 if __name__ == "__main__":
