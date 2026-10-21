@@ -96,6 +96,24 @@ stretch goal; splitting a poem into isolated lines can lose translation context.
 are unimplemented. The old tutorial's Gemini job describes **one translation**,
 not batch processing. Its separate published image has not been inspected here.
 
+## Developing your own app against GCP
+
+The classroom path uses prebuilt images so we can focus on deployment. When you
+build your own application, **do not rebuild, push, and deploy for every edit**.
+Run Python locally, authenticate with Application Default Credentials (ADC), and
+call the real APIs from your laptop. Use your developer identity initially, or
+impersonate the intended runtime service account to check its permissions.
+
+Then test the packaged image locally and deploy a tested version for the final
+check of Cloud Run identity, networking, resources, and startup behavior. Local
+success does not prove the deployed configuration is correct.
+
+See [local GCP authentication and the development loop](tutorial/app/README.md#local-development-against-gcp)
+for commands, impersonation prerequisites, quota-project configuration, and
+passing credentials into a local container without embedding them in the image.
+The current scaffold still does not implement speech or uploads; these steps
+describe the workflow for building those integrations.
+
 ## Implementation and publication checklist
 
 - [x] Document the four-part story and preserve original instructions.
