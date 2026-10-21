@@ -2,3 +2,12 @@
 .DS_Store
 /docker-volumes
 trainer.tar.gz
+
+# Local tutorial development
+**/.venv/
+**/__pycache__/
+*.egg-info/
+**/build/
+**/dist/
+.env
+.env.*
