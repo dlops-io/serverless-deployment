@@ -148,17 +148,21 @@ not batch processing. Its separate published image has not been inspected here.
 - [x] Document the four-part story and preserve original instructions.
 - [x] Add a translation UI and shared code with service and batch entry points.
 - [x] Supply one Dockerfile for service and job; separate images are unnecessary.
-- [ ] Rehearse the UI against the actual translation provider.
+- [x] Verify the local container serves the UI and returns a real translation.
 - [ ] Implement Vertex AI speech and test browser audio playback.
 - [ ] Implement bucket uploads and retry-safe artifact naming.
 - [ ] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
 - [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
 - [ ] Verify runtime identities and public invocation in the teaching project.
-- [ ] Build and smoke-test a Linux AMD64 image.
+- [x] Build and smoke-test a Linux AMD64 image locally.
 - [ ] Push a versioned image to Docker Hub or Artifact Registry.
 - [ ] Record its tested digest and replace documentation placeholders.
 - [ ] Rehearse all parts, output retrieval, and resource cleanup.
 
-**No new image has been built, published, or deployed for this branch.** Students
-must not be told to pull a proposed image before publication and verification.
+**A local development image has been built and smoke-tested; it has not been
+published or deployed to Cloud Run.** Students must not be told to pull a proposed
+image before publication and verification.
 See the [application scaffold guide](tutorial/app/README.md) for local commands.
+
+An [independent Opus 5.5 teaching-flow review](docs/flow-review-opus55.md) identifies
+further sequencing improvements. Its recommendations are recorded, not yet applied.

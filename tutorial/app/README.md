@@ -127,7 +127,7 @@ and [service account impersonation](https://docs.cloud.google.com/iam/docs/servi
 
 ## One image, two startup commands
 
-Build from this directory (image build is still a rehearsal task):
+Build from this directory (a Linux AMD64 development build has been smoke-tested):
 
 ```bash
 docker build --platform linux/amd64 -t translation-demo:dev .
