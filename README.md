@@ -64,6 +64,27 @@ enablement, billing, quotas, audio format, and playback during rehearsal.
 Separate who may invoke the service from what the running service may access.
 Service accounts are runtime identities, not features exclusive to jobs.
 
+### How was this developed before deployment?
+
+Pause here to explain the development workflow, before the prebuilt app feels
+like magic. The developer runs the same Python application on a laptop and calls
+Vertex AI using **Application Default Credentials (ADC)**. Start with developer
+credentials, or impersonate the intended runtime service account to test its
+permissions. Edit, run, and debug locally; do not rebuild and publish on every edit.
+
+Then test the packaged container locally, publish the tested image, and attach
+the runtime service account when deploying it. The client library discovers ADC
+in both environments: local credentials during development, attached identity
+in Cloud Run. A CLI login, application ADC, and the deployed runtime identity are
+different things; choosing a project does not give the application credentials.
+
+This is an explanation plus an optional short local demonstration, not a required
+detour through every Dockerfile or authentication detail. Show a small local API
+call if time allows. The [local development guide](tutorial/app/README.md#local-development-against-gcp)
+has commands for ADC login, impersonation, permissions, quota-project setup, and
+credential mounts for local containers. No credentials belong in the image.
+Local success still needs a final check of deployed identity and networking.
+
 **Scaffold boundary:** the UI and adapter contract exist, but live Vertex AI speech
 is unimplemented and returns an explicit not-implemented response. The audio
 button is disabled by default. Do not present it as a working feature yet.
@@ -80,12 +101,38 @@ to batch CLI. Cloud Run jobs execute container processes to completion; they do
 not use the HTTP function's "Write a function" path.
 
 Give the job a separate runtime service account with Vertex AI inference access
-and permission to create objects **in the particular output bucket**. A candidate
-is `roles/storage.objectCreator`, which cannot overwrite existing objects. Use a
+and permission to read the input bucket and create objects **in the particular
+output bucket**. Candidates are `roles/storage.objectViewer` on the input bucket
+and `roles/storage.objectCreator` on the output bucket. The latter cannot overwrite
+existing objects. Use a
 fresh output prefix and settle retry behavior before enabling uploads. The person
-retrieving outputs needs separate read access. Files need not be public. Reading
-input from a private bucket would need additional read permission; that is an
-optional extension.
+retrieving outputs needs separate read access. Files need not be public.
+
+### Set up once, then run from the console or terminal
+
+Students use their own GCP project and storage, not the instructor's buckets.
+They share our published image; project IDs, bucket paths, and service accounts
+are supplied as configuration. No student rebuild is needed.
+
+1. **One-time setup:** create the input/output buckets, configure the job identity
+   with the three access requirements above, and create a Cloud Run job using the
+   published image and batch command. Also establish the student's permission to
+   upload input, launch job executions (including argument overrides), and retrieve
+   results. Keep caller permissions distinct from the job's runtime permissions.
+2. **Console demonstration:** upload a text file, supply its Cloud Storage URI and
+   a fresh output prefix as job arguments, execute, inspect logs, and retrieve
+   the saved text/audio. A local filename is not visible to the remote container.
+3. **CLI demonstration:** use `gcloud storage cp` to upload a local text file, then
+   `gcloud run jobs execute` with input/output argument overrides. This executes
+   the already-created job; it does not require returning to the console.
+4. **Optional helper:** combine those two commands after showing both explicitly.
+   The helper should upload, launch, report execution status/output location, and
+   optionally download results. It must not imply the job-launch command itself
+   automatically uploads local files.
+
+The [job walkthrough design](docs/job-workflow.md) records the proposed console
+arguments and CLI sequence. The storage-input option and helper remain work to
+implement, not supported commands in the current application scaffold.
 
 A short classroom task illustrates the same pattern as unattended overnight
 work. Rehearse resource limits, task timeout, and retries explicitly. Start with
@@ -96,24 +143,6 @@ stretch goal; splitting a poem into isolated lines can lose translation context.
 are unimplemented. The old tutorial's Gemini job describes **one translation**,
 not batch processing. Its separate published image has not been inspected here.
 
-## Developing your own app against GCP
-
-The classroom path uses prebuilt images so we can focus on deployment. When you
-build your own application, **do not rebuild, push, and deploy for every edit**.
-Run Python locally, authenticate with Application Default Credentials (ADC), and
-call the real APIs from your laptop. Use your developer identity initially, or
-impersonate the intended runtime service account to check its permissions.
-
-Then test the packaged image locally and deploy a tested version for the final
-check of Cloud Run identity, networking, resources, and startup behavior. Local
-success does not prove the deployed configuration is correct.
-
-See [local GCP authentication and the development loop](tutorial/app/README.md#local-development-against-gcp)
-for commands, impersonation prerequisites, quota-project configuration, and
-passing credentials into a local container without embedding them in the image.
-The current scaffold still does not implement speech or uploads; these steps
-describe the workflow for building those integrations.
-
 ## Implementation and publication checklist
 
 - [x] Document the four-part story and preserve original instructions.
@@ -122,6 +151,8 @@ describe the workflow for building those integrations.
 - [ ] Rehearse the UI against the actual translation provider.
 - [ ] Implement Vertex AI speech and test browser audio playback.
 - [ ] Implement bucket uploads and retry-safe artifact naming.
+- [ ] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
+- [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
 - [ ] Verify runtime identities and public invocation in the teaching project.
 - [ ] Build and smoke-test a Linux AMD64 image.
 - [ ] Push a versioned image to Docker Hub or Artifact Registry.
