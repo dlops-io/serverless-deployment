@@ -89,8 +89,9 @@ Local success still needs a final check of deployed identity and networking.
 are implemented and covered by offline checks. Enable speech explicitly after
 configuring ADC or a runtime identity. A real Vertex call using impersonated ADC
 has returned valid WAV audio both from local Python and through the local
-container HTTP route. Browser playback and Cloud Run deployment
-still need rehearsal; do not present those as verified yet. The
+container HTTP route. The instructor confirmed local browser playback. The deployed Cloud Run UI,
+translation route, and speech route have also returned successfully using the
+attached runtime identity. Cloud browser playback still needs a manual check. The
 [application guide](tutorial/app/README.md#create-the-runtime-identity-console-or-cli)
 shows both console setup and equivalent service-account/IAM CLI commands.
 
@@ -159,15 +160,15 @@ not batch processing. Its separate published image has not been inspected here.
 - [ ] Implement bucket uploads and retry-safe artifact naming.
 - [ ] Add Cloud Storage input, console execution instructions, and CLI upload/execute/download examples.
 - [ ] Add the optional upload-and-launch helper after the explicit CLI steps work.
-- [ ] Verify runtime identities and public invocation in the teaching project.
+- [x] Verify public UI, translation, and speech routes with the attached runtime identity in the teaching project.
 - [x] Build and smoke-test a Linux AMD64 image locally.
 - [ ] Push a versioned image to Docker Hub or Artifact Registry.
 - [ ] Record its tested digest and replace documentation placeholders.
 - [ ] Rehearse all parts, output retrieval, and resource cleanup.
 
-**A local development image has been built and smoke-tested; it has not been
-published or deployed to Cloud Run.** Students must not be told to pull a proposed
-image before publication and verification.
+**The development image has been published privately in the teaching project’s
+Artifact Registry and tested on Cloud Run.** This is not yet a student-accessible
+Docker Hub image. See the [deployment record](docs/cloud-run-rehearsal.md).
 See the [application scaffold guide](tutorial/app/README.md) for local commands.
 
 An [independent Opus 5.5 teaching-flow review](docs/flow-review-opus55.md) identifies

@@ -5,8 +5,9 @@ network access and a functioning googletrans provider. Part 3 implements Vertex 
 after configuring identity. Part 4 still has no Cloud Storage uploads or batch execution.
 Offline speech checks pass. A real Vertex call using impersonated service-account
 ADC has returned valid WAV audio both from local Python and through the container
-HTTP route. Browser playback and cloud deployment
-still need verification.
+HTTP route. Local browser playback was confirmed by the instructor. The deployed Cloud Run
+UI, translation route, and speech route also pass live checks; manual cloud
+browser playback remains to be checked.
 
 ## Local development
 
@@ -222,10 +223,13 @@ In Cloud Run job settings the **command** would be `python` and the individual
 whole command into one argument field. Remove `--plan` only after real execution
 is implemented and rehearsed.
 
-## Image publication: not done yet
+## Image publication: teaching-project rehearsal
 
-Maintainers must choose a registry namespace and verify write access before
-publishing. Tag a tested image with an explicit version, push it, record its
+The image has been published privately to the teaching project’s Artifact
+Registry and deployed successfully to Cloud Run; see the
+[rehearsal record](../../docs/cloud-run-rehearsal.md). A student-accessible registry
+address is still needed. Maintainers must choose that namespace and verify write
+access before publishing for students. Tag a tested image with an explicit version, push it, record its
 digest, and test deployment from that digest. Do not overwrite the original
 tutorial's `latest` image while developing this branch. No student-ready image
 address is claimed by these instructions.
