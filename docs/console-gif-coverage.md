@@ -12,9 +12,9 @@ previously completed job results. Account bars and unrelated errors are excluded
 | 2.1 Local container | Actual public image run locally, real translation, speech disabled. |
 | 2.2 Container deployment | Existing image, name/region, public access, Create control; no duplicate deployed. |
 | 3.1 Runtime account | IAM entry, creation form preview, existing project grants and account email. |
-| 3.2 Speech configuration | Advanced identity selector and three environment values, shown in equivalent create-form controls; live translation/audio checkpoint. |
+| 3.2 Speech configuration | Existing service Security selector → Containers → all three environment variables → View diff & redeploy → Deploy changes → completed rollout; live app checkpoint. |
 | 3.3 Local identity | Principals with access → Grant access → Token Creator preview. Credential login and files intentionally remain text-only. |
-| 4.1 Storage | Private bucket wizard; folder and upload controls; an existing object's gs:// URI. |
+| 4.1 Storage | Complete private bucket creation through every Continue, Create, PAP Confirm, and resulting Configuration; separate folder/upload controls and existing object URI. |
 | 4.2 Storage grants | Job principal plus input Object Viewer/output Object Creator previews; grants not saved. |
 | 4.3 Job | Image/name/region, separate command/argument chips, environment, runtime identity, timeout/retries and Create control. |
 | 4.4 Execution/results | Execute control, historical successful executions, success summary, all three private output files, audio Download and playback. |
@@ -25,8 +25,8 @@ previously completed job results. Account bars and unrelated errors are excluded
 
 - Conditional API enablement was not recorded; the project was already configured
   and the API details page intermittently failed to load.
-- The speech-settings clip uses equivalent advanced controls in a creation-form
-  preview; it does not show navigation through Edit & deploy new revision.
+- The speech-settings clip now records the actual inline existing-service workflow;
+  there is no Edit & deploy new revision action in this observed console.
 - Identity creation/grant forms are previews combined with inspection of existing
   permissions. They do not establish that a new identity or grant was submitted.
 - The local file chooser, upload wait, deployed-revision/log inspection, and task
@@ -44,4 +44,6 @@ previously completed job results. Account bars and unrelated errors are excluded
 - Cleanup remains text-only; no demo resources were deleted for illustration.
 
 The short-lived local capture container was stopped after the local app capture.
-No new cloud resources or IAM grants were saved during this capture session.
+Two private capture buckets were created on October 22 to record the complete
+wizard, and the existing web service was redeployed with its speech variables.
+No new IAM grants or public exposure were added.

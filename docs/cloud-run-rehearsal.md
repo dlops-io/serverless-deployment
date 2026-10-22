@@ -9,7 +9,7 @@ image are recorded in [the job rehearsal](job-rehearsal.md).
 - Project: `ac215-project`
 - Cloud Run service: `translation-demo`
 - Service region: `northamerica-northeast2`
-- Vertex model location: `us-central1`
+- Model location: `us-central1`
 - Runtime identity: `translation-demo@ac215-project.iam.gserviceaccount.com`
 - Image: `northamerica-northeast2-docker.pkg.dev/ac215-project/cloud-run-source-deploy/translation-demo@sha256:1837fa5fe52744d22847d9899b9a294eff32141c5f7289af99ba2f9749b69a56`
 - Source commit: `4096c0f`
@@ -26,7 +26,7 @@ Docker Hub address. The original course image's `latest` tag was not changed.
 
 The deployed service uses its attached identity through ADC. No local ADC file or
 service-account key was included in the image or uploaded to the service.
-Public invocation and the runtime's permission to call Vertex AI are separate.
+Public invocation and the runtime's permission to call Agent Platform are separate.
 The service has 512 MiB memory, one CPU, zero minimum instances, two maximum
 instances, concurrency four, and a 120-second request timeout.
 

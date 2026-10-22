@@ -1,3 +1,7 @@
+> Historical reference: product labels and console instructions in this document
+> are preserved from the earlier version. Follow the current [tutorial](../README.md)
+> for the recorded console workflow and current Agent Platform labels.
+
 Independent teaching-flow review requested by the instructor.
 Model confirmed by the reviewer CLI: Claude Opus 5.5.
 This report contains suggestions, not applied changes. In particular, the actual

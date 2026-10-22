@@ -1,3 +1,7 @@
+> Historical reference: product labels and console instructions in this document
+> are preserved from the earlier version. Follow the current [tutorial](../README.md)
+> for the recorded console workflow and current Agent Platform labels.
+
 # Serverless Deployment
 
 In this demo we use the Simple Translate App and deploy it to GCP using various Serverless options

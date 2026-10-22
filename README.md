@@ -13,7 +13,7 @@ App: accept input, call a model service, and return a result.
 | --- | --- | --- |
 | [1. Deploy a function](#part-1-deploy-a-translation-function) | Call a URL with text and language parameters | Supply code; Google builds the runnable image |
 | [2. Deploy a web app](#part-2-deploy-a-translation-web-app) | Move a working local UI to a public URL | Deploy an existing container image |
-| [3. Add speech](#part-3-give-the-web-app-access-to-vertex-ai) | Play the translation as audio | Give a runtime identity permission to call Vertex AI |
+| [3. Add speech](#part-3-give-the-web-app-access-to-agent-platform) | Play the translation as audio | Give a runtime identity permission to call Agent Platform |
 | [4. Run a job](#part-4-generate-and-save-a-translated-audio-edition) | Translate a passage and save text and audio | Run finite work and keep its output in Storage |
 
 **Follow the console steps first.** The expandable **Equivalent gcloud commands**
@@ -95,11 +95,11 @@ handler and its dependencies. Google builds and runs the container for you.
 ### 1.1 Create the function
 
 1. In the console, open **Cloud Run → Services** and select **Write a function**.
-   On a narrow window, it can be under the toolbar’s **More actions** menu.
+   This opens **Create service**. On a narrow window, **Write a function** is
+   under the toolbar’s **More actions** menu.
 2. If prompted to enable required APIs, enable them and return to the form.
 3. Set **Service name** to `translate-function` and choose your region.
-4. Select **Python 3.12** as the runtime. Do not use the old tutorial's Python 3.10
-   setting.
+4. In **Runtime**, select **Python 3.12**.
 5. Under **Authentication**, select **Allow public access** for this classroom
    endpoint, then select **Create**.
 6. Wait for the service to be created. Open its **Source** editor if the console
@@ -125,7 +125,8 @@ the region and runtime rather than accepting defaults.
 
 ### 1.2 Supply the code and dependencies
 
-1. Replace `main.py` with the contents of
+1. In **Source**, select **Edit source** if the editor is read-only. Replace
+   `main.py` with the contents of
    [`tutorial/function/main.py`](tutorial/function/main.py):
 
    ```python
@@ -150,8 +151,7 @@ the region and runtime rather than accepting defaults.
 
 3. Set the **Function entry point** to `hello_http`. This is the Python function
    the serving framework should call, not the filename or service name.
-4. Select **Save and redeploy** (some console versions label this **Save and
-   deploy**). Wait for the revision to become ready.
+4. Select **Save and redeploy**. Wait for the revision to become ready.
 
 ### 1.3 Call the endpoint
 
@@ -226,7 +226,7 @@ prediction of the next cold start. Minimum-instance settings can keep capacity
 warm when that matters.
 
 The default text translation here uses `googletrans`, a wrapper around an
-external translation service. It is independent of the Vertex AI speech call we
+external translation service. It is independent of the Agent Platform speech call we
 add later. Provider failures and quotas can affect a demo; inspect logs rather
 than treating a completed build as proof that translation worked.
 
@@ -272,7 +272,8 @@ speech setting. The same image is deployed to Cloud Run next.
 ### 2.2 Deploy the same image
 
 1. Open **Cloud Run → Services → Deploy container**.
-2. Choose deployment from an **existing container image** and paste:
+2. On **Create service**, select **Deploy one revision from an existing
+   container image**. In **Container image URL**, paste:
 
    ```text
    cgumb/ac215-translation-demo:lecture14-batch-50d8201
@@ -284,8 +285,7 @@ speech setting. The same image is deployed to Cloud Run next.
 5. Leave the image's startup command unchanged. Do not add speech environment
    variables yet. Select **Create** and wait until the service is ready.
 6. Copy its **URL**, open the page, and repeat your local translation.
-7. Open **Revision History** (sometimes **Revisions**) and **Observability →
-   Logs** in service details. A revision is a deployed version of the service's
+7. Open **Revision History** and **Observability → Logs** in service details. A revision is a deployed version of the service's
    image and configuration.
 
 <details open>
@@ -340,10 +340,10 @@ external translation provider → our app → browser.
 
 </details>
 
-## Part 3: Give the web app access to Vertex AI
+## Part 3: Give the web app access to Agent Platform
 
 Keep the same app and translation provider. This time, enable **Play audio**.
-The app will call Gemini text-to-speech through Vertex AI and return audio to
+The app will call Gemini text-to-speech through Agent Platform and return audio to
 the waiting browser. This requires an authorized identity, not an output bucket.
 
 Two permissions questions are separate: **who may call our public app**, and
@@ -351,19 +351,22 @@ Two permissions questions are separate: **who may call our public app**, and
 
 ### 3.1 Enable the API and create the app's identity
 
-1. In **APIs & Services → Library**, find **Vertex AI API** and enable it in your
+1. In **APIs & Services → Library**, find **Agent Platform API** and enable it in your
    project if it is not already enabled.
 2. Open **IAM & Admin → Service Accounts → Create service account**.
-3. Use `translation-demo` as the account ID, with a descriptive display name.
+3. Set **Service account name** to `Translation demo runtime` and
+   **Service account ID** to `translation-demo`.
    Its email will be `translation-demo@YOUR_PROJECT_ID.iam.gserviceaccount.com`.
-4. Expand **Permissions** (or the step for granting project access), and add
-   **Vertex AI User** and **Service Usage Consumer**, then finish creation. The first grants
-   model access; the second permits using the project for API quota/billing.
+4. Select **Create and continue**. In **Permissions (optional)**, add
+   **Agent Platform User** and **Service Usage Consumer**. The first grants model
+   access; the second permits API quota/billing. Continue past
+   **Principals with access (optional)** without adding a principal, then finish
+   creation. We add your developer access separately in section 3.3.
 5. Record the account email. You do not need to create or download a key.
 
-In the captured console, **Vertex AI User** appears as **Agent Platform User**;
-the role ID remains `roles/aiplatform.user`. Use that role ID to identify it if
-the console label differs from the instructions.
+The **Agent Platform User** role uses the ID `roles/aiplatform.user` in the
+command alternatives. The **Agent Platform API** service ID is
+`aiplatform.googleapis.com`.
 
 <details open>
 <summary>Watch GIF — create and inspect the runtime identity</summary>
@@ -400,10 +403,12 @@ from the account's runtime permissions.
 ### 3.2 Attach the identity and enable speech
 
 1. Return to **Cloud Run → Services → translation-demo**.
-2. Select **Edit & deploy new revision**.
-3. Under **Security**, select the service account you just created.
-4. Under the container's **Variables & Secrets** settings, add these environment
-   variables:
+2. Open the **Security** tab. Under **Service Account**, choose your runtime
+   identity in the **Service account** selector. Check its email against the
+   account you created in section 3.1.
+3. Open **Containers** and scroll to **Variables & Secrets → Environment
+   variables**. Select **Add variable** for each of these three rows, entering
+   its **Name** and **Value**:
 
    | Name | Value |
    | --- | --- |
@@ -411,8 +416,11 @@ from the account's runtime permissions.
    | `GOOGLE_CLOUD_PROJECT` | Your project ID |
    | `GOOGLE_CLOUD_LOCATION` | `us-central1` |
 
-5. Keep the same image and public invocation setting. Deploy the revision and
-   wait for it to become ready.
+4. Scroll back to the top and select **View diff & redeploy**. In **Review
+   changes to be deployed**, check the new environment variables and leave
+   **Serve this revision immediately** selected. Select **Deploy changes**.
+5. Wait for updating the service, creating the revision, and routing traffic to
+   finish.
 6. Reload the app's URL. Translate a short English sentence into French, then
    select **Play audio**. Use the browser's audio controls to replay it.
 7. If the request fails, read the message shown in the UI and inspect the
@@ -427,9 +435,9 @@ to be saved to a bucket in this part.
 
 ![Select the app service account and configure the speech environment variables](images/console/identity-speech-settings.gif)
 
-This previews the equivalent advanced controls in the **Create service** form.
-For your existing app, enter through **Edit & deploy new revision** as described
-above. The capture does not create or deploy another service.
+This records changes to the existing service: select the runtime identity, add
+all three variables, review the diff, and deploy the changes. Pointer movement
+and click rings are added guides.
 
 </details>
 
@@ -480,7 +488,9 @@ private key. Cloud Run obtains credentials from the attached identity instead.
 
 First grant your developer user **Service Account Token Creator** on the web
 runtime account: **IAM & Admin → Service Accounts → translation-demo →
-Principals with access → Grant access**. Add your user email as principal and that role.
+Principals with access → Grant access**. In **New principals**, enter your user
+email. Under **Assign roles → Role**, select **Service Account Token Creator**,
+then select **Save**.
 Enable the **IAM Service Account Credentials API** under **APIs & Services**.
 
 <details open>
@@ -550,17 +560,31 @@ longer unattended work.
 
 ### 4.1 Create your input and output buckets
 
-1. Open **Cloud Storage → Buckets → Create**.
-2. Choose a **globally unique input bucket name**, such as your project ID plus
-   `-translation-input`. Record the full name.
-3. Use a **Region** location in your chosen region, **Standard** storage,
-   **Uniform** access control, and keep **public access prevention** enabled.
-   Create the bucket without adding a custom retention policy.
-4. Repeat for a separate, globally unique **output bucket**.
+1. Open **Cloud Storage → Buckets** and select **Create** (the create-bucket action).
+2. In **Get started**, choose a globally unique input bucket name, such as your
+   project ID plus `-translation-input`. Record the name and select **Continue**.
+3. Complete each section of the bucket wizard:
+   - **Choose where to store your data:** select **Region**, choose your region
+     (we use **northamerica-northeast2 (Toronto)**), then **Continue**.
+   - **Choose how to store your data:** keep **Set a default class → Standard**.
+     Leave **Enable Hierarchical namespace on this bucket** unchecked. Scroll
+     to **Continue** and select it.
+   - **Choose how to control access to objects:** keep **Enforce public access
+     prevention on this bucket** checked and **Uniform** selected. Scroll to
+     **Continue** and select it.
+   - **Choose how to protect object data:** keep **Soft delete policy (For data
+     recovery)** and **Use default retention duration**. Leave **Object versioning
+     (For version control)** and **Retention (For compliance)** unchecked.
+   Scroll to **Create** and select it. In **Public access will be prevented**,
+   preserve the checkbox and select **Confirm**. On the created bucket's
+   **Configuration** tab, check its region, Standard storage, and private access.
+4. Repeat for a separate, globally unique output bucket.
 5. Save the [sample passage](tutorial/app/examples/passage.txt) to your machine.
-   Open the input bucket, create a folder named `run-001`, then use **Upload
-   files** to upload it as `passage.txt`.
-6. Open the uploaded object's details and copy its **gs:// URI**. It should look
+   Open the input bucket's **Objects** tab. Select **Create folder**, enter
+   `run-001`, and select **Create**. Open that folder and choose **Upload →
+   Upload files**, then select `passage.txt` on your machine.
+6. Open `passage.txt`. On **Object details → Live object**, find
+   **Cloud Storage URI** and use its copy icon. It should look
    like `gs://YOUR_INPUT_BUCKET/run-001/passage.txt`.
 
 The input bucket holds uploaded passages. The output bucket will hold generated
@@ -572,8 +596,9 @@ your own buckets even though everyone shares the same public image.
 
 ![Choose a unique bucket name, region, Standard storage, and private Uniform access](images/console/storage-bucket-setup.gif)
 
-This is a creation-form preview, ending at **Create** without submitting a new
-bucket. Repeat the same process for your output bucket.
+This records the complete output-bucket creation, including each **Continue**,
+**Create**, the public-access-prevention **Confirm** dialog, and the resulting
+bucket configuration. Repeat the same process for your input bucket.
 
 </details>
 
@@ -615,7 +640,7 @@ gcloud storage cp tutorial/app/examples/passage.txt \
 
 1. Open **IAM & Admin → Service Accounts → Create service account**. Set the
    account ID to `translation-audio-job`.
-2. Grant it **Vertex AI User** and **Service Usage Consumer** on your project,
+2. Grant it **Agent Platform User** and **Service Usage Consumer** on your project,
    as you did for the web account. Record its email.
 3. Open the **input bucket → Permissions → Grant access**. Add the job account
    email as principal and grant **Storage Object Viewer**.
@@ -658,13 +683,14 @@ gcloud storage buckets add-iam-policy-binding "gs://$OUTPUT_BUCKET" \
 For a restricted project, your caller also needs **Service Account User** on the
 job account to attach it. Running with argument overrides requires
 `run.jobs.runWithOverrides`, supplied by **Cloud Run Jobs Executor With
-Overrides**. This is separate from the job account's Vertex/Storage access.
+Overrides**. This is separate from the job account's Agent Platform and Storage access.
 
 </details>
 
 ### 4.3 Create the job
 
-1. Open **Cloud Run → Jobs** and choose **Deploy container** / **Create job**.
+1. Open **Cloud Run → Jobs** and select **Deploy container**. The page is
+   titled **Create job**.
 2. Paste the same public image used in part 2:
 
    ```text
@@ -672,11 +698,13 @@ Overrides**. This is separate from the job account's Vertex/Storage access.
    ```
 
 3. Set **Job name** to `translation-audio`, choose your region, and use **1 task**.
-4. Expand the container settings. Set **Container command** to `python`. This
-   replaces the image's default command that starts the web server.
+4. Expand **Containers, Connections, Security**. In **Containers → Edit
+   Container → Settings**, enter `python` in **Container command**, then press
+   **Enter** to create its chip. This replaces the image's web-server command.
 5. In **Container arguments**, enter the following as **individual arguments**,
-   replacing the two bucket placeholders. Do not paste the whole block into one
-   argument field.
+   replacing the two bucket placeholders. Type one value and press **Enter**
+   to create its chip before entering the next. Do not paste the whole block
+   into one argument field.
 
    ```text
    -m
@@ -692,7 +720,9 @@ Overrides**. This is separate from the job account's Vertex/Storage access.
    gs://YOUR_OUTPUT_BUCKET/run-001/
    ```
 
-6. Set these container environment variables:
+6. In **Edit Container**, select **Variables & Secrets**. Under **Environment
+   variables**, select **Add variable** for each row and fill its **Name** and
+   **Value**. Select **Done** after adding all three:
 
    | Name | Value |
    | --- | --- |
@@ -700,9 +730,13 @@ Overrides**. This is separate from the job account's Vertex/Storage access.
    | `GOOGLE_CLOUD_PROJECT` | Your project ID |
    | `GOOGLE_CLOUD_LOCATION` | `us-central1` |
 
-7. Under **Security**, select `translation-audio-job`, the job runtime account.
-8. Set **task timeout** to **5 minutes**, **retries** to **0**, **memory** to
-   **512 MiB**, and **CPU** to **1**. Keep the first example sequential.
+7. Select **Security → Service account**. Choose the job account by its email,
+   `translation-audio-job@YOUR_PROJECT_ID.iam.gserviceaccount.com`. The selector
+   displays its service-account name, which may differ from its ID.
+8. Return to **Containers**. Under **Task capacity**, set **Task timeout** to
+   `5`, **Time unit** to **minute**, and **Number of retries per failed task**
+   to `0`. In the container's **Settings**, keep **Memory** at **512 MiB** and
+   **CPU** at **1**. Keep **Number of tasks** at `1`.
 9. Leave **Execute job immediately** unchecked and select **Create**. We will
    launch it explicitly next.
 
@@ -942,7 +976,7 @@ For a fuller command reference, see the [job workflow guide](docs/job-workflow.m
 | Function build fails | Build logs, runtime, requirements, entry point, and build-account permissions |
 | Text translation fails | Service logs and external translation provider availability |
 | Play audio is disabled | `ENABLE_SPEECH=true`, deployed revision, and page reload |
-| Speech request is denied | Attached identity, Vertex API, inference/quota permissions, model location |
+| Speech request is denied | Attached identity, Agent Platform API, inference/quota permissions, model location |
 | A local app cannot authenticate | Application ADC setup, impersonation permission, credential mount if containerized |
 | Job cannot read or write an object | Exact `gs://` paths and bucket grants for the **job** account |
 | Job starts a server instead of finishing | Command `python` and separate batch arguments |

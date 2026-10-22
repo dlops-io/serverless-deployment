@@ -17,7 +17,7 @@ same image; startup command is what distinguishes service and job behavior.
 - Private output bucket: `ac215-project-lecture14-output`
 - Execution settings: one task, zero retries, five-minute timeout, 512 MiB, one CPU.
 
-The job identity has Vertex AI User and Service Usage Consumer on the project,
+The job identity has Agent Platform User and Service Usage Consumer on the project,
 Object Viewer on the input bucket, and Object Creator on the output bucket.
 The web-service account has no added Storage access. The buckets use uniform
 access and public access prevention. Students create their own buckets and job

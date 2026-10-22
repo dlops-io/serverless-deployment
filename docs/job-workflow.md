@@ -1,17 +1,17 @@
 # Part 4: console and CLI workflow design
 
 The batch CLI supports both `--text-file` (inside the container) and `--input-uri`
-(Cloud Storage). It reuses the web app's translation and Vertex speech adapters.
+(Cloud Storage). It reuses the web app's translation and Agent Platform speech adapters.
 `--plan` describes work without network calls. A real run writes translated text,
 WAV audio, and a completion manifest to a unique attempt folder, then exits.
 
 ## One-time setup in each student's project
 
-- Enable the required Cloud Run, Vertex AI, and Cloud Storage APIs and billing.
+- Enable the required Cloud Run, Agent Platform, and Cloud Storage APIs and billing.
 - Create private input/output buckets with globally unique names. If using one
   bucket instead, explain that its granted read/write permissions apply there.
 - Create a job runtime service account. Grant input-object read access on the
-  input bucket, object creation on the output bucket, and the required Vertex AI
+  input bucket, object creation on the output bucket, and the required Agent Platform
   inference permission. Use bucket-level grants rather than project-wide storage
   administration. Keep the public web service's identity separate.
 - Ensure the student's CLI identity can upload source text, execute the job with
@@ -29,7 +29,7 @@ following along still need explicit setup instructions for theirs.
 
 Choose globally unique bucket names; the names below are placeholders. This is
 one-time setup, not work repeated for every passage. The instructor can show the
-same actions through **Storage → Buckets → Create** and each bucket's
+same actions through **Cloud Storage → Buckets → Create** and each bucket's
 **Permissions → Grant access**. Use uniform bucket access and keep both buckets
 private. The public UI's runtime identity does not receive these Storage roles.
 
@@ -67,7 +67,7 @@ the container itself can do. A project administrator can grant these permissions
 when a student is not already authorized.
 
 Create the job after uploading its initial passage. In the console, use **Cloud
-Run → Jobs → Create job**, choose the image and runtime account, and enter command
+Run → Jobs → Deploy container** to open **Create job**, choose the image and runtime account, and enter command
 `python`. Set `ENABLE_SPEECH=true`, your `GOOGLE_CLOUD_PROJECT`, and model location
 `GOOGLE_CLOUD_LOCATION=us-central1`. Use one task, zero retries, and a five-minute
 task timeout for the initial rehearsal. The equivalent CLI is:

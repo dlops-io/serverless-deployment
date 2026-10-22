@@ -1,10 +1,10 @@
 # Translation application
 
 Part 2 has a translation UI and HTTP route. Live translation requires outbound
-network access and a functioning googletrans provider. Part 3 implements Vertex AI speech and browser WAV playback, enabled explicitly
+network access and a functioning googletrans provider. Part 3 implements Agent Platform speech and browser WAV playback, enabled explicitly
 after configuring identity. Part 4 reads a UTF-8 passage and saves translated text, WAV audio, and a completion
 manifest to private Cloud Storage, then exits.
-Offline speech checks pass. A real Vertex call using impersonated service-account
+Offline speech checks pass. A real Agent Platform call using impersonated service-account
 ADC has returned valid WAV audio both from local Python and through the container
 HTTP route. Local browser playback was confirmed by the instructor. The deployed Cloud Run
 UI, translation route, and speech route also pass live checks; the instructor also confirmed cloud
@@ -44,17 +44,18 @@ development should have a faster loop: **edit → run locally → call the real 
 inspect the response**. Rebuilding and publishing an image belongs later.
 
 The translation provider in part 2 does not use GCP credentials. The following
-setup applies to Vertex AI speech and, later, Cloud Storage uploads.
+setup applies to Agent Platform speech and, later, Cloud Storage uploads.
 Speech, Storage input, and batch uploads are implemented.
 
 ### Create the runtime identity: console or CLI
 
 In the console, open **IAM & Admin → Service Accounts → Create service account**.
-Create a dedicated translation demo account and grant **Vertex AI User** on your
+Create a dedicated translation demo account and grant **Agent Platform User** on your
 project. Also grant **Service Usage Consumer** so it can use this project as the
-API quota project. On that service account's **Permissions** tab, grant your developer user
+API quota project. On that service account's **Principals with access** tab, choose **Grant access**
+and grant your developer user
 **Service Account Token Creator**. These are two different grants: the runtime
-account can call Vertex AI; the developer can request temporary credentials as it.
+account can call Agent Platform; the developer can request temporary credentials as it.
 The person deploying Cloud Run also needs permission to attach this account
 (`iam.serviceAccounts.actAs`, commonly via Service Account User).
 
@@ -140,10 +141,12 @@ uv run python -m translation_demo serve
 ```
 
 Translate a short sentence, then select **Play audio**. The server calls
-`gemini-2.5-flash-tts` through Vertex AI using ADC, wraps the returned mono 24 kHz
+`gemini-2.5-flash-tts` through Agent Platform using ADC, wraps the returned mono 24 kHz
 16-bit PCM in a WAV header, and returns it directly to the browser. No bucket is
 used. The browser retains the audio for replay until the next translation.
-`VERTEX_TTS_MODEL` and `VERTEX_TTS_VOICE` can override the defaults (voice: `Kore`).
+The app configuration variables `VERTEX_TTS_MODEL` and `VERTEX_TTS_VOICE`
+retain their original names; they override the model and voice defaults
+(voice: `Kore`). These are code identifiers, not console product labels.
 Model location is independent of the Cloud Run region. Verify model availability
 and language support for your selected location. The demo limits speech input to
 4,000 UTF-8 bytes and reports credential, permission, and provider failures.
