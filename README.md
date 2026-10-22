@@ -35,7 +35,7 @@ local list number on the same line as the description, such as
 3. Choose a Cloud Run region. These instructions use **Toronto
    (`northamerica-northeast2`)**. The speech model uses **`us-central1`**; that is
    a separate setting we introduce in part 3.
-4. Clone or download the [tutorial branch](https://github.com/dlops-io/serverless-deployment/tree/codex/four-part-tutorial). Use the repository root as the working
+4. Clone or download the [repository](https://github.com/dlops-io/serverless-deployment). Use the repository root as the working
    directory for terminal examples. Docker is needed for the local demonstration
    in part 2. Python and the Google Cloud CLI are needed for the local helper in
    part 4. Deploying a prebuilt image through the console does not require Docker.
