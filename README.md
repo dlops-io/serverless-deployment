@@ -277,6 +277,17 @@ instructor's local run and continue to the next step.
 7. Open **Revisions** and **Logs** in service details. A revision is a deployed
    version of the service's image and configuration.
 
+<details open>
+<summary>Watch GIF — deploy the existing container, steps 1–5</summary>
+
+![Choose Deploy container, paste the image, set name and region, then configure public access](images/console/container-setup.gif)
+
+This annotated capture shows the configuration before **Create**. It does not
+create another copy of the existing rehearsal service. Deployment waiting time
+and the later revision/log inspection are not included in this clip.
+
+</details>
+
 **Checkpoint:** someone else can use the app through its cloud URL. We supplied
 an already-built image, so this deployment did not need to build our source.
 
@@ -385,6 +396,17 @@ from the account's runtime permissions.
 **Checkpoint:** the app can call an authenticated cloud API using its attached
 service account. Audio is returned directly to the browser; no audio files have
 to be saved to a bucket in this part.
+
+<details open>
+<summary>Watch GIF — verify translation and browser audio</summary>
+
+![Enter text, translate it, request speech, and replay the returned audio](images/console/web-translation-speech.gif)
+
+This is the live web app after part 3 is configured. The first three frames also
+show the translation interaction used in part 2; audio becomes available only
+after speech is enabled. Pointer movement and click rings are added guides.
+
+</details>
 
 <details>
 <summary>Equivalent gcloud commands — attach the account and enable speech</summary>
