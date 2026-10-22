@@ -106,8 +106,8 @@ handler and its dependencies. Google builds and runs the container for you.
    does not take you there automatically. The initial service can contain sample
    code; we replace that next.
 
-<details>
-<summary>Console navigation — opening the function creation form</summary>
+<details open>
+<summary>Watch GIF — opening the function creation form</summary>
 
 ![Cloud Run Services: choose Write a function, then the inline function creation form](images/console/function-entry.gif)
 
@@ -171,8 +171,8 @@ without checking them.
 The question mark begins the query string; ampersands separate its parameters.
 The `src` and `dest` parameters identify languages, not cloud regions.
 
-<details>
-<summary>Console capture — source files, completed deployment, and live response</summary>
+<details open>
+<summary>Watch GIF — source files, deployment, and live response</summary>
 
 ![Edit the handler and dependencies, confirm build completion, then view the French translation](images/console/function-deploy-test.gif)
 
