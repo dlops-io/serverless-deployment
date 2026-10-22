@@ -1,29 +1,39 @@
 #!/usr/bin/env python3
-"""Add changing README step references above the existing tutorial GIF headers.
+"""Render compact, single-line step captions in tutorial GIF headers.
 
 Run from any directory with Pillow installed. The adjacent JSON maps the actual
-recording timeline to README steps; unnumbered sections use section references.
-Existing captions, screenshots, cursor guides and frame durations are retained.
-The GIF comment makes reruns replace this ribbon rather than stack ribbons.
+recording timeline to README steps; unnumbered sections use descriptive labels.
+The displayed number is local to the README list, not its full section path.
+Screenshot bodies, cursor guides and frame durations are retained exactly.
+The GIF comment makes reruns replace the header rather than stack headers.
 """
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-BAND = 36
-MARKER = b"ac215-readme-step-ribbon-v1"
-FONT = ImageFont.truetype("DejaVuSans.ttf", 21)
+BAND = 44
+OLD_MARKER = b"ac215-readme-step-ribbon-v1"
+MARKER = b"ac215-compact-step-header-v2"
 
 
-def label_at(spec, milliseconds):
+def caption_at(spec, milliseconds):
     if "period_ms" in spec:
-        return spec["labels"][milliseconds // spec["period_ms"]]
-    return next(item["label"] for item in reversed(spec["timeline"])
-                if milliseconds >= item["at_ms"])
+        index = milliseconds // spec["period_ms"]
+        label = spec["labels"][index]
+    else:
+        index = next(i for i in reversed(range(len(spec["timeline"])))
+                     if milliseconds >= spec["timeline"][i]["at_ms"])
+        label = spec["timeline"][index]["label"]
+    if label.startswith("Section"):
+        prefix = "Local development" if "3.3" in label else "Helper"
+    else:
+        prefix = re.sub(r"\d+\.\d+\.(\d+)", r"\1", label)
+    return prefix + " — " + spec["captions"][index]
 
 
 def fingerprint(image):
@@ -36,15 +46,16 @@ def label_gif(item):
     output = path.with_suffix(".numbered.gif")
     frames, durations, originals = [], [], []
     with Image.open(path) as source:
-        already_labeled = MARKER in source.info.get("comment", b"")
+        comment = source.info.get("comment", b"")
+        old_header = BAND if MARKER in comment else spec["source_header_px"] + (
+            36 if OLD_MARKER in comment else 0)
         elapsed = 0
         for n in range(source.n_frames):
             source.seek(n)
             rgb = source.convert("RGB")
-            if already_labeled:
-                rgb = rgb.crop((0, BAND, rgb.width, rgb.height))
+            rgb = rgb.crop((0, old_header, rgb.width, rgb.height))
             duration = source.info["duration"]
-            label = label_at(spec, elapsed)
+            label = caption_at(spec, elapsed)
             # Reuse only colors already in this frame's palette. Drawing text
             # directly in palette mode adds no antialias colors and preserves
             # every screenshot pixel exactly, checked again after GIF encoding.
@@ -61,8 +72,16 @@ def label_gif(item):
             canvas.putpalette(palette)
             canvas.paste(palette_frame, (0, BAND))
             draw = ImageDraw.Draw(canvas)
-            assert draw.textbbox((12, 4), label, font=FONT)[2] < rgb.width - 12
-            draw.text((12, 4), label, font=FONT, fill=foreground)
+            size = 21 if rgb.width >= 1000 else 16
+            while True:
+                font = ImageFont.truetype("DejaVuSans.ttf", size)
+                if draw.textbbox((12, 0), label, font=font)[2] <= rgb.width - 12:
+                    break
+                size -= 1
+                assert size >= 13, (name, label, "shorten this caption")
+            bounds = draw.textbbox((0, 0), label, font=font)
+            y = (BAND - (bounds[3] - bounds[1])) // 2 - bounds[1]
+            draw.text((12, y), label, font=font, fill=foreground)
             assert canvas.convert("RGB").crop((0, BAND, rgb.width, rgb.height + BAND)).tobytes() == rgb.tobytes()
             originals.append((fingerprint(rgb), duration))
             frames.append(canvas)

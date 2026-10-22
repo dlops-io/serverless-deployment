@@ -12,7 +12,19 @@
       "Step 1.1.6",
       "Step 1.1.6"
     ],
-    "duration_ms": 20250
+    "duration_ms": 20250,
+    "captions": [
+      "Cloud Run → Services: select Write a function",
+      "Create service: enter translate-function",
+      "Region: choose northamerica-northeast2 (Toronto)",
+      "Toronto selected; next choose Runtime",
+      "Runtime: select Python 3.12",
+      "Authentication: select Allow public access",
+      "Select Create to provision the public function",
+      "Create submitted: provisioning the public function",
+      "Created function: open Source to replace the sample handler"
+    ],
+    "source_header_px": 78
   },
   "function-deploy-test.gif": {
     "period_ms": 2250,
@@ -31,7 +43,23 @@
       "Step 1.3.5",
       "Step 1.3.5"
     ],
-    "duration_ms": 29250
+    "duration_ms": 29250,
+    "captions": [
+      "Created function: open Source to replace the sample handler",
+      "Replace main.py with the translation handler",
+      "Select requirements.txt in Files",
+      "Set dependencies, confirm hello_http, select Save and redeploy",
+      "Save and redeploy submitted",
+      "Building source: Google assembles the runnable image",
+      "All four deployment stages completed; open the service URL",
+      "Default request: English → Spanish (Bienvenido a AC215)",
+      "Append ?text=Good%20afternoon%20everyone&src=en&dest=fr",
+      "Change dest=el: the same endpoint returns Greek",
+      "Return to service details: select Observability",
+      "Select Logs under Observability",
+      "Find the matching French query and verify GET 200"
+    ],
+    "source_header_px": 78
   },
   "container-local-app.gif": {
     "period_ms": 2700,
@@ -42,7 +70,15 @@
       "Steps 2.1.3–2.1.4",
       "Step 2.1.4"
     ],
-    "duration_ms": 13500
+    "duration_ms": 13500,
+    "captions": [
+      "Start the prebuilt image (actual terminal output)",
+      "Open localhost:8086; defaults: English → French",
+      "Scroll if needed → Translate",
+      "French translation; Play audio remains disabled",
+      "Return to the terminal → Ctrl+C (actual shutdown)"
+    ],
+    "source_header_px": 80
   },
   "container-setup.gif": {
     "period_ms": 2500,
@@ -66,7 +102,28 @@
       "Step 2.2.10",
       "Step 2.2.4"
     ],
-    "duration_ms": 45000
+    "duration_ms": 45000,
+    "captions": [
+      "Services toolbar detail: select Deploy container",
+      "Create service: enter the public image URL and translation-demo",
+      "Region: select northamerica-northeast2 (Toronto)",
+      "Authentication: select Allow public access",
+      "Allow public access selected; keep Request-based billing",
+      "Auto scaling: minimum 0, maximum 2; expand advanced settings",
+      "Containers → Settings: keep port 8080 and blank startup overrides",
+      "Keep the default 512 MiB memory and 1 CPU",
+      "Scroll down inside the form and select Done",
+      "Requests: timeout 120 seconds, concurrency 4; select Create",
+      "Create submitted: Cloud Run provisions the public web service",
+      "Creation completed: open the public service URL",
+      "The deployed UI is ready: select Translate",
+      "The public web app returns Bonjour à tous; speech is still disabled",
+      "Service details → Revision History: inspect the ready revision",
+      "Observability navigation detail: select Logs",
+      "Inspect a POST /api/translate entry: HTTP status 200",
+      "Security confirms Allow public access for this service"
+    ],
+    "source_header_px": 78
   },
   "identity-create.gif": {
     "period_ms": 2300,
@@ -82,7 +139,20 @@
       "Step 3.1.4",
       "Step 3.1.5"
     ],
-    "duration_ms": 23000
+    "duration_ms": 23000,
+    "captions": [
+      "Service Accounts toolbar detail → Create service account",
+      "Enter the runtime identity name and ID; select Create and continue",
+      "Permissions (optional): open the first Role selector",
+      "Role picker detail: select Agent Platform User",
+      "Agent Platform User selected; select Add another role",
+      "Open the second Role selector",
+      "Search and select Service Usage Consumer",
+      "Both roles selected: select Continue",
+      "Leave optional principals empty; finish with Done",
+      "Filtered result: runtime account Enabled, No keys; open its row"
+    ],
+    "source_header_px": 78
   },
   "identity-impersonation.gif": {
     "period_ms": 2300,
@@ -96,7 +166,18 @@
       "Section 3.3 · service account impersonation",
       "Section 3.3 · service account impersonation"
     ],
-    "duration_ms": 18400
+    "duration_ms": 18400,
+    "captions": [
+      "Filtered result: runtime account Enabled, No keys; open its row",
+      "Open this account, then select Principals with access",
+      "Principals with access detail: select Grant access",
+      "Grant access is scoped to this runtime service account",
+      "Enter your own developer email; replace the default role",
+      "Select Service Account Token Creator",
+      "Confirm Token Creator, then Save",
+      "Filtered result: Token Creator on this account; inherited project roles"
+    ],
+    "source_header_px": 78
   },
   "identity-speech-settings.gif": {
     "period_ms": 2500,
@@ -113,7 +194,21 @@
       "Step 3.2.5",
       "Step 3.2.5"
     ],
-    "duration_ms": 27500
+    "duration_ms": 27500,
+    "captions": [
+      "Service details → Security: open the Service account selector",
+      "Filter by email and select translation-demo-runtime",
+      "Dedicated runtime selected; open Containers",
+      "Fill the first empty Name 1 and Value 1 row",
+      "ENABLE_SPEECH=true; select Add variable for the next setting",
+      "GOOGLE_CLOUD_PROJECT=ac215-project; add the location setting",
+      "GOOGLE_CLOUD_LOCATION=us-central1",
+      "Select View diff & redeploy",
+      "Review the new identity and all three variables; select Deploy changes",
+      "Deploy changes submitted: creating the new revision",
+      "All deployment stages completed; the service is healthy"
+    ],
+    "source_header_px": 78
   },
   "web-translation-speech.gif": {
     "period_ms": 2500,
@@ -123,7 +218,14 @@
       "Step 3.2.6",
       "Step 3.2.6"
     ],
-    "duration_ms": 10000
+    "duration_ms": 10000,
+    "captions": [
+      "Reload the public app, enter text and select Translate",
+      "Translation complete: select Play audio",
+      "Audio ready: press the audio player’s play control",
+      "The player shows Pause: generated French audio is playing"
+    ],
+    "source_header_px": 78
   },
   "storage-bucket-setup.gif": {
     "period_ms": 3010,
@@ -146,7 +248,27 @@
       "Steps 4.1.3–4.1.4",
       "Steps 4.1.3–4.1.4"
     ],
-    "duration_ms": 51170
+    "duration_ms": 51170,
+    "captions": [
+      "Cloud Storage → Buckets → Create bucket",
+      "Get started: enter a globally unique bucket name",
+      "Click Continue after entering the name",
+      "Choose where to store your data: select Region",
+      "Open Region selector",
+      "Scroll the menu; select northamerica-northeast2 (Toronto)",
+      "Verify Toronto, then click Continue",
+      "Choose how to store your data: keep Standard",
+      "Leave Hierarchical namespace unchecked; scroll and Continue",
+      "Keep public access prevention checked and Uniform selected",
+      "Leave IP filtering unchanged; scroll and click Continue",
+      "Keep Soft delete policy → Use default retention duration",
+      "Leave Retention (For compliance) unchecked; click Create",
+      "Public access will be prevented: keep it checked and Confirm",
+      "Bucket created: verify Toronto, Standard, and Not public",
+      "Open Configuration to check the completed bucket",
+      "Verified: Location type Region; Location Toronto"
+    ],
+    "source_header_px": 64
   },
   "storage-input-uri.gif": {
     "period_ms": 2700,
@@ -161,7 +283,19 @@
       "Step 4.1.6",
       "Step 4.1.6"
     ],
-    "duration_ms": 24300
+    "duration_ms": 24300,
+    "captions": [
+      "Input bucket → Objects → Create folder",
+      "Enter run-001 → Create",
+      "Open the newly created run-001 folder",
+      "Upload → Upload files",
+      "Confirm: 1 file successfully uploaded",
+      "Open passage.txt after its upload succeeds",
+      "Static navigation detail: Object details → Live object",
+      "Scroll to Cloud Storage URI → copy",
+      "Use this gs:// URI as the job input"
+    ],
+    "source_header_px": 80
   },
   "storage-job-permissions.gif": {
     "period_ms": 2300,
@@ -183,7 +317,26 @@
       "Step 4.2.4",
       "Step 4.2.4"
     ],
-    "duration_ms": 36800
+    "duration_ms": 36800,
+    "captions": [
+      "Buckets list detail: open your input bucket",
+      "Input bucket header detail: select Permissions",
+      "Scroll to Permissions and select Grant access",
+      "New principals: enter the job service account email",
+      "Role: search and select Storage Object Viewer",
+      "Input bucket: verify the entered principal and Object Viewer",
+      "Input bucket: confirm principal + Object Viewer, then Save",
+      "Filtered saved result: job can read input objects",
+      "Buckets list detail: open your output bucket",
+      "Output bucket header detail: select Permissions",
+      "Scroll to Permissions and select Grant access",
+      "New principals: enter the same job service account email",
+      "Role: search and select Storage Object Creator",
+      "Output bucket: verify the same principal and Object Creator",
+      "Output bucket: confirm principal + Object Creator, then Save",
+      "Filtered saved result: job can create outputs; buckets stay private"
+    ],
+    "source_header_px": 78
   },
   "job-command-settings.gif": {
     "period_ms": 2700,
@@ -209,7 +362,30 @@
       "Step 4.3.5",
       "Step 4.3.5"
     ],
-    "duration_ms": 54000
+    "duration_ms": 54000,
+    "captions": [
+      "Jobs toolbar → Deploy container (detail)",
+      "Set the image and Job name; choose Region",
+      "Choose northamerica-northeast2 (Toronto)",
+      "Confirm the selected Toronto region → OK",
+      "Keep 1 task; expand Containers, Connections, Security",
+      "Static navigation detail: Containers tab",
+      "If the row is collapsed: expand its chevron (static detail)",
+      "Edit Container → Settings → Container command",
+      "Enter python, then press Enter to make its chip",
+      "Add argument and press Enter: -m",
+      "Add argument and press Enter: translation_demo",
+      "Add argument and press Enter: batch",
+      "Add argument and press Enter: --input-uri",
+      "Add the input file URI; press Enter",
+      "Add argument and press Enter: --src",
+      "Add argument and press Enter: en",
+      "Add argument and press Enter: --dest",
+      "Add argument and press Enter: fr",
+      "Add argument and press Enter: --output-uri",
+      "Add the output URI; press Enter"
+    ],
+    "source_header_px": 80
   },
   "job-identity-limits.gif": {
     "period_ms": 2700,
@@ -227,7 +403,22 @@
       "Step 4.3.9",
       "Step 4.3.9"
     ],
-    "duration_ms": 32400
+    "duration_ms": 32400,
+    "captions": [
+      "Variables & Secrets → Add variable",
+      "Environment variable 1: ENABLE_SPEECH = true",
+      "GOOGLE_CLOUD_PROJECT = your project ID",
+      "GOOGLE_CLOUD_LOCATION = us-central1",
+      "Save the container settings with Done",
+      "Task capacity: 5 minutes, 0 retries",
+      "Select Security (tab-strip detail)",
+      "Security → Service account",
+      "Choose translation-audio-job by its email",
+      "Confirm the selected job identity",
+      "Leave Execute job immediately unchecked → Create",
+      "Created job → History: no executions yet"
+    ],
+    "source_header_px": 80
   },
   "job-execution-results.gif": {
     "period_ms": 2700,
@@ -252,7 +443,29 @@
       "Step 4.4.5",
       "Step 4.4.5"
     ],
-    "duration_ms": 51300
+    "duration_ms": 51300,
+    "captions": [
+      "Created job → History: no executions yet",
+      "Use More actions when the toolbar is narrow",
+      "Select Execute to run the saved job",
+      "History shows translation-audio-hq9f5 succeeded",
+      "On Tasks, scroll right if needed → View logs",
+      "Task logs show status complete and the output URIs",
+      "Expand output_uri to identify this execution’s saved folder",
+      "Read the output_uri for this same execution",
+      "Navigation menu → Cloud Storage (drawer detail)",
+      "Cloud Storage → Buckets (drawer detail)",
+      "Select your output bucket (list detail)",
+      "Open run-001 in the output bucket",
+      "Open the attempt reported in the logs",
+      "Check text, audio, and manifest files",
+      "Download speech.wav from this attempt",
+      "The WAV opens in a media tab; play it, then open ⋮",
+      "If audio opens in the browser: ⋮ → Download",
+      "Download translated.txt from the same attempt",
+      "The text download opens the complete French translation"
+    ],
+    "source_header_px": 80
   },
   "terminal-job-steps.gif": {
     "timeline": [
@@ -269,7 +482,13 @@
         "label": "Step 4.5.4"
       }
     ],
-    "duration_ms": 36100
+    "duration_ms": 36100,
+    "captions": [
+      "Upload the passage",
+      "Execute the job with overrides",
+      "Download the results"
+    ],
+    "source_header_px": 94
   },
   "terminal-job-helper.gif": {
     "timeline": [
@@ -278,6 +497,10 @@
         "label": "Section 4.6 · upload, execute, download helper"
       }
     ],
-    "duration_ms": 29300
+    "duration_ms": 29300,
+    "captions": [
+      "Upload, execute, and download with the helper"
+    ],
+    "source_header_px": 94
   }
 }

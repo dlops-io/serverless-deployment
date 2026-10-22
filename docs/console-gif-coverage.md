@@ -66,13 +66,14 @@ wording and annotation corrections are recorded in
 
 ## README step headers
 
-Each GIF has a top ribbon identifying the current README step, changing as the
-action changes. Unnumbered sections 3.3 and 4.6 use their section number. The
-original captions, cursor guides, all 714 screenshot/terminal frames and every
-frame duration are unchanged. Pixel-for-pixel body comparison verified this
-across all 16 GIFs.
+Each GIF has a compact, single-line header: **Step N — description**, where N
+is the local list number in the surrounding README section. Unnumbered local
+sections use a short descriptive label instead. There is no additional ribbon.
+The screenshot/terminal bodies, cursor guides and all 714 frame durations are
+unchanged; the renderer verifies the bodies pixel for pixel after encoding.
 
-The mapping is in `tutorial/gif_steps.json`. With Pillow installed, run
-`python tutorial/label_gifs.py` to update the ribbons. Rerunning replaces the
-ribbon rather than stacking another one. Update the mapping when recording
+The full references and captions are maintained in `tutorial/gif_steps.json`;
+only the local number is displayed. With Pillow installed, run
+`python tutorial/label_gifs.py` to update the headers. Rerunning replaces the
+header rather than stacking another one. Update the mapping when recording
 timelines or README numbering change.

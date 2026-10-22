@@ -19,8 +19,9 @@ App: accept input, call a model service, and return a result.
 **Follow the console steps first.** The expandable **Equivalent gcloud commands**
 sections are alternative ways to perform the same actions, not additional steps
 to run after creating the same resources in the console. Expand **More detail**
-when you want to understand what is happening underneath. GIF headers show the
-matching step: **Step 3.2.2** means section **3.2**, numbered step **2**.
+when you want to understand what is happening underneath. GIF headers use the
+local list number on the same line as the description, such as
+**Step 2 — Select the service account**.
 
 ## Before you begin
 
