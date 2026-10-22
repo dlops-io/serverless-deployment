@@ -1,49 +1,65 @@
-# Console GIF coverage
+# Console walkthrough recording coverage
 
-These are annotated real screenshots with animated pointer/click guides, not
-continuous screen recordings. Forms can be revisited without creating duplicate
-resources; captions distinguish unsubmitted previews, live app interactions, and
-previously completed job results. Account bars and unrelated errors are excluded.
+The GIFs combine real screenshots with added pointer/click guides. They are not
+continuous videos. Long build/deploy waits and accidental navigation/recovery
+are shortened; no submitted action is inferred from an unsubmitted preview.
+Cropped toolbar or navigation details are labeled as details. Terminal clips
+animate actual saved command output, rather than simulated successful runs.
 
-| Tutorial block | GIF coverage |
+| Tutorial block | Recorded actions and verification |
 | --- | --- |
-| 1.1 Function setup | Navigation, name, region, runtime, public invocation, Create control, earlier Source destination. |
-| 1.2 Code/deploy/test | Handler, requirements, completed rollout, live response. |
-| 2.1 Local container | Actual public image run locally, real translation, speech disabled. |
-| 2.2 Container deployment | Existing image, name/region, public access, Create control; no duplicate deployed. |
-| 3.1 Runtime account | IAM entry, creation form preview, existing project grants and account email. |
-| 3.2 Speech configuration | Existing service Security selector → Containers → all three environment variables → View diff & redeploy → Deploy changes → completed rollout; live app checkpoint. |
-| 3.3 Local identity | Principals with access → Grant access → Token Creator preview. Credential login and files intentionally remain text-only. |
-| 4.1 Storage | Complete private bucket creation through every Continue, Create, PAP Confirm, and resulting Configuration; separate folder/upload controls and existing object URI. |
-| 4.2 Storage grants | Job principal plus input Object Viewer/output Object Creator previews; grants not saved. |
-| 4.3 Job | Image/name/region, separate command/argument chips, environment, runtime identity, timeout/retries and Create control. |
-| 4.4 Execution/results | Execute control, historical successful executions, success summary, all three private output files, audio Download and playback. |
-| 4.5 Terminal submission | Explicitly labeled dry-run command preview: upload → execute → download. |
-| 4.6 Helper | Actual helper dry-run output animated with a persistent dry-run label. |
+| 1.1 Function setup | Services → Write a function → name → Toronto → Python 3.12 → Allow public access → actual Create → created Source editor. |
+| 1.2 Code/deploy/test | Actual replacement of main.py and requirements.txt; hello_http; Save and redeploy; completed rollout; default, French and Greek requests; matching HTTP 200 request log. |
+| 2.1 Local container | Actual Docker startup output for the README image/port; localhost app; visible Translate action; French result and disabled speech; actual Ctrl+C shutdown. |
+| 2.2 Container service | Actual public service creation, all advanced controls, Done, Create and ready rollout; separate speech-disabled baseline translation recapture; representative revision/log views. |
+| 3.1 Runtime identity | Actual new translation-demo-runtime account, both project roles in the creation wizard, Continue and Done; resulting account email and no keys. Agent Platform API Enabled is separately shown in a current console screenshot. |
+| 3.2 Speech setup | Default identity → new runtime identity → three variables → full review diff → Deploy changes → ready rollout → actual browser translation and audio playback. |
+| 3.3 Local identity | Actual developer principal and Service Account Token Creator selection/replacement → Save; account-scoped binding verified. |
+| 4.1 Bucket creation | Complete private output-bucket creation: every Continue, Toronto/Standard/Uniform/public-access prevention, default soft delete, Create, public-access Confirm, resulting configuration. |
+| 4.1 Input upload | Actual run-001 folder creation → Upload files → passage.txt selected through file chooser → successful upload → same object's Storage URI copied. |
+| 4.2 Storage grants | Input/output Permissions → Grant access → job principal → the respective Viewer/Creator role → actual Save; scoped grant verified in the filtered Permissions list. |
+| 4.3 Job creation | Jobs → Deploy container → image/name/region → each command/argument chip → all variables → Done → timeout/retries → job identity → actual Create → empty History. |
+| 4.4 Execution/results | Actual console Execute → translation-audio-hq9f5 succeeded → task View logs → exact output_uri → matching run-001/de2f41… attempt → all three files → media-tab ⋮ → Download selected and French text response. |
+| 4.5 Terminal commands | Exact README upload → Spanish execution → download commands; successful execution translation-audio-8mw6k and verified files. |
+| 4.6 Helper | Actual helper invocation, upload → French execution translation-audio-jnlmc → download → manifest/file validation; complete output retained. |
 
-## Intentional omissions and capture limitations
+## Boundaries and substitutions
 
-- Conditional API enablement was not recorded; the project was already configured
-  and the API details page intermittently failed to load.
-- The speech-settings clip now records the actual inline existing-service workflow;
-  there is no Edit & deploy new revision action in this observed console.
-- Identity creation/grant forms are previews combined with inspection of existing
-  permissions. They do not establish that a new identity or grant was submitted.
-- The local file chooser, upload wait, deployed-revision/log inspection, and task
-  log contents are not recorded. Screens with errors or indefinite loading were
-  excluded rather than passed off as useful tutorial frames.
-- Job results come from earlier successful rehearsals. In this capture session,
-  pressing Execute returned a generic console failure. No fresh successful run
-  is claimed. Historical status and the private output objects were inspected;
-  console listing errors required recovery before clean result captures.
-- The console displays roles/aiplatform.user as Agent Platform User in the role
-  drawer. The existing runtime grants were independently checked with gcloud;
-  the role IDs remain aiplatform.user and serviceusage.serviceUsageConsumer.
-- Rehearsal bucket names/prefixes and a unique preview job name appear in the
-  images. Students must substitute their own project, identity, and Storage paths.
-- Cleanup remains text-only; no demo resources were deleted for illustration.
+- Required APIs were already enabled. The conditional Enable button is described
+  for a new project; the current Agent Platform API page and enabled state were
+  verified directly. APIs are not disabled in a shared project just to film them.
+- The system file picker differs by OS and is not part of the browser screenshot
+  surface. Its selection step is stated in the GIF caption and performed with
+  the real file; the successful upload and exact resulting object are shown.
+- Browser sign-in and credential JSON contents are intentionally not recorded.
+  The ADC commands remain in the optional local-development instructions.
+- The bucket-creation clip creates the instructor's private
+  `ac215-project-lecture14-capture-output-20261022`; the upload/job clips use the
+  instructor's `ac215-project-lecture14-input` and `-output`. These are independent
+  demonstrations of the same controls, not a claim that the capture bucket was
+  the job's input. Students must consistently use the two names on their worksheet.
+- Job execution, task logs and output timestamps/paths in the results GIF all
+  belong to **translation-audio-hq9f5**. No historical execution is paired with
+  another execution's artifacts.
+- Part 2 combines separate rehearsals at the same public URL. The successful
+  translation result was recaptured with speech temporarily disabled after the
+  runtime identity had been attached. Its HTTP 200 log is an earlier request,
+  not the recaptured request. Translation does not use the runtime identity.
+- Static navigation details are labeled; the job Containers/row-chevron and
+  upload Live object tab details are cropped actual earlier Console captures
+  of those controls, with unrelated older values excluded.
+- Console listing failures were recovered before useful captures; unrelated
+  failed project resources and notification overlays are excluded from toolbar
+  details. There is no fabricated console UI or substituted success message.
+- Browser download behavior varies. In this browser the WAV link opened a media
+  tab; its menu offers Download. The text link opened the translated text
+  directly. The CLI and helper recordings verify the saved files.
+- Cleanup remains text/CLI based. The isolated lifecycle helper has live setup,
+  functional, same-name recreation, interrupted-setup recovery and cleanup
+  evidence in [lifecycle-live-check.md](lifecycle-live-check.md).
 
-The short-lived local capture container was stopped after the local app capture.
-Two private capture buckets were created on October 22 to record the complete
-wizard, and the existing web service was redeployed with its speech variables.
-No new IAM grants or public exposure were added.
+The original audit is a snapshot of commit `396668f` in
+[console-audit-opus55.md](console-audit-opus55.md). The replacement recordings
+passed the [final Opus 5.5 visual review](console-signoff-opus55.md). Its remaining
+wording and annotation corrections are recorded in
+[the resolution report](console-audit-resolution.md).

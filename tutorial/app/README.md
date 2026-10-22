@@ -64,7 +64,7 @@ Equivalent CLI setup, run by an identity authorized to create accounts and edit 
 ```bash
 PROJECT_ID=YOUR_PROJECT_ID
 DEVELOPER_EMAIL=YOUR_GOOGLE_ACCOUNT_EMAIL
-SERVICE_ACCOUNT_NAME=translation-demo
+SERVICE_ACCOUNT_NAME=translation-demo-runtime
 SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 gcloud services enable aiplatform.googleapis.com iamcredentials.googleapis.com \
@@ -231,12 +231,12 @@ permissions. A failing operation produces a nonzero exit status.
 
 ## Public tutorial image
 
-Use `cgumb/ac215-translation-demo:lecture14-batch-50d8201` for the classroom
+Use `cgumb/ac215-translation-demo:lecture14-agent-platform-20261022` for the classroom
 console walkthrough. Anonymous pull has been verified. The pinned digest is
-`sha256:a1d4858aca190421b8aabeb0d5fcc6fda0d0902486ca5f34319adcf42453c6e6`.
+`sha256:c17b6db09f7402febb582bf327920ec9ca4eee113f5ddefa38e9da5619dbe72e`.
 
 ```bash
-docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-batch-50d8201
+docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
 ```
 
 Speech remains disabled until part 3 credentials and environment settings are

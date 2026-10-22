@@ -1,5 +1,9 @@
 # Console function rehearsal
 
+> Earlier rehearsal record. Image versions, service names and UI details below
+> describe that run. Use the [current README](../README.md) for student steps
+> and [current recording coverage](console-gif-coverage.md) for the replacement captures.
+
 The function example was recreated through the GCP console in project
 `ac215-project`, using service `translate-function-rehearsal` in
 `northamerica-northeast2` with Python 3.12, public invocation, zero minimum
@@ -23,7 +27,7 @@ video recording; waiting time is omitted.
 
 Assets:
 
-- `images/console/function-entry.gif`: open function creation from Services.
+- `images/console/function-setup.gif`: open function creation from Services.
 - `images/console/function-deploy-test.gif`: handler, requirements, completed
   rollout, and browser response.
 

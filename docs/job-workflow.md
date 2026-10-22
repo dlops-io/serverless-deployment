@@ -40,7 +40,7 @@ INPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_INPUT_BUCKET
 OUTPUT_BUCKET=YOUR_GLOBALLY_UNIQUE_OUTPUT_BUCKET
 JOB_ACCOUNT=translation-audio-job
 JOB_EMAIL="${JOB_ACCOUNT}@${PROJECT_ID}.iam.gserviceaccount.com"
-IMAGE=cgumb/ac215-translation-demo:lecture14-batch-50d8201
+IMAGE=cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
 
 gcloud services enable run.googleapis.com aiplatform.googleapis.com storage.googleapis.com \
   --project="$PROJECT_ID"
@@ -125,9 +125,10 @@ gcloud storage cp ./passage.txt gs://INPUT_BUCKET/run-002/passage.txt \
 gcloud run jobs execute translation-audio \
   --project=YOUR_PROJECT_ID \
   --region=YOUR_REGION \
-  --args=-m,translation_demo,batch,--input-uri,gs://INPUT_BUCKET/run-002/passage.txt,--src,en,--dest,fr,--output-uri,gs://OUTPUT_BUCKET/run-002/ \
+  --args=-m,translation_demo,batch,--input-uri,gs://INPUT_BUCKET/run-002/passage.txt,--src,en,--dest,es,--output-uri,gs://OUTPUT_BUCKET/run-002/ \
   --wait
 
+mkdir -p results
 gcloud storage cp --recursive gs://OUTPUT_BUCKET/run-002 ./results \
   --project=YOUR_PROJECT_ID
 ```

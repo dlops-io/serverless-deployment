@@ -45,7 +45,7 @@ those choices through the later steps.
 | --- | --- |
 | Function service | `translate-function` |
 | Web service | `translation-demo` |
-| Web runtime account | `translation-demo` |
+| Web runtime account | `translation-demo-runtime` |
 | Job | `translation-audio` |
 | Job runtime account | `translation-audio-job` |
 | Input bucket | A globally unique name you choose in part 4 |
@@ -54,7 +54,7 @@ those choices through the later steps.
 The public image used in parts 2–4 is:
 
 ```text
-cgumb/ac215-translation-demo:lecture14-batch-50d8201
+cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
 ```
 
 You do not need to build or publish an image to follow the tutorial. The source,
@@ -72,10 +72,10 @@ has gcloud installed and normally uses your console identity.
 gcloud auth login
 export PROJECT_ID=YOUR_PROJECT_ID
 export REGION=northamerica-northeast2
-export IMAGE=cgumb/ac215-translation-demo:lecture14-batch-50d8201
+export IMAGE=cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
 export WEB_SERVICE=translation-demo
 export JOB_NAME=translation-audio
-export WEB_EMAIL="translation-demo@${PROJECT_ID}.iam.gserviceaccount.com"
+export WEB_EMAIL="translation-demo-runtime@${PROJECT_ID}.iam.gserviceaccount.com"
 export JOB_EMAIL="translation-audio-job@${PROJECT_ID}.iam.gserviceaccount.com"
 ```
 
@@ -111,15 +111,11 @@ handler and its dependencies. Google builds and runs the container for you.
 
 ![Function setup: navigation, name, region, Python runtime, public access, Create, and Source editor](images/console/function-setup.gif)
 
-The pointer and click rings are added guides over captured screenshots, not a
-continuous recording. This sequence covers steps 1–6. API enablement is conditional
-and was not prompted in our already-configured project. Creation settings were
-revisited without creating a duplicate resource; the Source frame is from the
-earlier successful rehearsal, with deployment waiting time omitted. The form is
-titled **Create service** even for a function. Use your own service name and check
-the region and runtime rather than accepting defaults.
-
-[Still image of the function creation form](images/console/function-create.png).
+The pointer and click rings are added guides over real screenshots, rather than
+continuous video. This records an actual public function creation through
+**Create** and the resulting **Source** editor. API enablement is conditional;
+our project already had the required APIs enabled. Build waiting time is
+shortened. Check the name, region, and runtime rather than accepting defaults.
 
 </details>
 
@@ -197,7 +193,7 @@ create a build repository in a new project.
 gcloud run deploy translate-function \
   --project="$PROJECT_ID" --region="$REGION" \
   --source=tutorial/function --function=hello_http --base-image=python312 \
-  --allow-unauthenticated
+  --no-invoker-iam-check
 
 FUNCTION_URL=$(gcloud run services describe translate-function \
   --project="$PROJECT_ID" --region="$REGION" --format='value(status.url)')
@@ -247,7 +243,7 @@ deploy that existing image and give the app a public URL.
 
    ```bash
    docker run --rm -p 8086:8080 \
-     cgumb/ac215-translation-demo:lecture14-batch-50d8201
+     cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
    ```
 
 2. Open [http://localhost:8086](http://localhost:8086).
@@ -276,26 +272,40 @@ speech setting. The same image is deployed to Cloud Run next.
    container image**. In **Container image URL**, paste:
 
    ```text
-   cgumb/ac215-translation-demo:lecture14-batch-50d8201
+   cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
    ```
 
 3. Set **Service name** to `translation-demo` and choose your region.
-4. Select **Allow public access**. Use request-based billing and zero minimum
-   instances for this demo.
-5. Leave the image's startup command unchanged. Do not add speech environment
-   variables yet. Select **Create** and wait until the service is ready.
-6. Copy its **URL**, open the page, and repeat your local translation.
-7. Open **Revision History** and **Observability → Logs** in service details. A revision is a deployed version of the service's
-   image and configuration.
+4. Select **Allow public access** and **Request-based** billing.
+5. Under service scaling, use **Auto scaling**, **Minimum number of instances** `0`, and
+   **Maximum number of instances** `2` for this demo.
+6. Expand **Containers, Networking, Security**. Under **Containers → Edit
+   Container → Settings**, verify **Container port** `8080`, **Memory**
+   **512 MiB**, and **CPU** `1`. Leave the image’s command and arguments
+   unchanged. Select **Done** to close the container editor.
+7. Under **Requests**, set **Request timeout** to `120` seconds and
+   **Maximum concurrent requests per instance** to `4`. These settings match
+   the command alternative below. Do not add speech variables yet.
+8. Select **Create** and wait until the service is ready.
+9. Copy its **URL**, open the page, and repeat your local translation. Speech
+   should still be disabled.
+10. Return to service details and open **Revision History**, then
+    **Observability → Logs**. A revision is a deployed version of the service’s
+    image and configuration.
 
 <details open>
-<summary>Watch GIF — deploy the existing container, steps 1–5</summary>
+<summary>Watch GIF — create the container service and verify it</summary>
 
 ![Choose Deploy container, paste the image, set name and region, then configure public access](images/console/container-setup.gif)
 
-This annotated capture shows the configuration before **Create**. It does not
-create another copy of the existing rehearsal service. Deployment waiting time
-and the later revision/log inspection are not included in this clip.
+This shows public service creation through **Done**, **Create** and completed
+rollout, plus revision/log inspection. The successful translation was recaptured
+later at the same public URL, temporarily disabling speech on the configured
+service to show the Part 2 UI. Translation does not use the runtime identity.
+The HTTP 200 log is from the earlier rehearsal, not that recaptured request.
+These are real Console screenshots with added pointer and click rings; they
+combine separate rehearsal sessions and shorten waiting. Keep the same image;
+no source build is needed.
 
 </details>
 
@@ -308,7 +318,7 @@ an already-built image, so this deployment did not need to build our source.
 ```bash
 gcloud run deploy "$WEB_SERVICE" \
   --project="$PROJECT_ID" --region="$REGION" --image="$IMAGE" \
-  --allow-unauthenticated --min-instances=0 --max-instances=2 \
+  --no-invoker-iam-check --min-instances=0 --max-instances=2 \
   --cpu=1 --memory=512Mi --concurrency=4 --timeout=120
 ```
 
@@ -355,26 +365,41 @@ Two permissions questions are separate: **who may call our public app**, and
    project if it is not already enabled.
 2. Open **IAM & Admin → Service Accounts → Create service account**.
 3. Set **Service account name** to `Translation demo runtime` and
-   **Service account ID** to `translation-demo`.
-   Its email will be `translation-demo@YOUR_PROJECT_ID.iam.gserviceaccount.com`.
+   **Service account ID** to `translation-demo-runtime`.
+   Its email will be `translation-demo-runtime@YOUR_PROJECT_ID.iam.gserviceaccount.com`.
+   **Service account description** is optional; the recording uses
+   “Calls Gemini speech for the translation app”.
 4. Select **Create and continue**. In **Permissions (optional)**, add
-   **Agent Platform User** and **Service Usage Consumer**. The first grants model
-   access; the second permits API quota/billing. Continue past
-   **Principals with access (optional)** without adding a principal, then finish
-   creation. We add your developer access separately in section 3.3.
+   **Agent Platform User**, then **Add another role → Service Usage Consumer**.
+   The first grants model access; the second permits API quota/billing. Select
+   **Continue** to reach **Principals with access (optional)**. Leave both
+   **Service account users role** and **Service account admins role** empty,
+   then select **Done**. We add your developer access separately in section 3.3.
 5. Record the account email. You do not need to create or download a key.
 
 The **Agent Platform User** role uses the ID `roles/aiplatform.user` in the
 command alternatives. The **Agent Platform API** service ID is
 `aiplatform.googleapis.com`.
 
+<details>
+<summary>If the API is already enabled</summary>
+
+The API’s product page shows **Agent Platform API** and **API Enabled**. Continue
+with account creation; do not disable it just to repeat this step. In a new
+project, select **Enable** and wait for completion before proceeding.
+
+![Agent Platform API product page showing API Enabled](images/console/agent-platform-api.png)
+
+</details>
+
 <details open>
 <summary>Watch GIF — create and inspect the runtime identity</summary>
 
-![Open service accounts, preview account creation, and inspect the runtime roles and email](images/console/identity-create.gif)
+![Create the runtime account, grant both project roles, finish with Done, and verify its email](images/console/identity-create.gif)
 
-The creation form is an unsubmitted preview; the final frames inspect the existing
-rehearsal account. API enablement is not shown. Choose your own unique account ID.
+This records actual account creation: **Create and continue**, both project
+roles, **Continue**, and final **Done**. The resulting account has no keys.
+API enablement is conditional and was already complete in this project.
 
 </details>
 
@@ -383,7 +408,7 @@ rehearsal account. API enablement is not shown. Choose your own unique account I
 
 ```bash
 gcloud services enable aiplatform.googleapis.com --project="$PROJECT_ID"
-gcloud iam service-accounts create translation-demo \
+gcloud iam service-accounts create translation-demo-runtime \
   --project="$PROJECT_ID" --display-name='Translation demo runtime'
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:$WEB_EMAIL" --role=roles/aiplatform.user --condition=None
@@ -402,13 +427,17 @@ from the account's runtime permissions.
 
 ### 3.2 Attach the identity and enable speech
 
+Your signed-in deployment identity needs **Service Account User**
+(`iam.serviceAccounts.actAs`) on the runtime account to attach it. This is
+separate from the runtime account’s model permissions.
+
 1. Return to **Cloud Run → Services → translation-demo**.
 2. Open the **Security** tab. Under **Service Account**, choose your runtime
    identity in the **Service account** selector. Check its email against the
    account you created in section 3.1.
-3. Open **Containers** and scroll to **Variables & Secrets → Environment
-   variables**. Select **Add variable** for each of these three rows, entering
-   its **Name** and **Value**:
+3. Open **Containers** and find **Variables & Secrets → Environment
+   variables**. Fill the empty **Name 1 / Value 1** row, then select
+   **Add variable** for each of the other two rows:
 
    | Name | Value |
    | --- | --- |
@@ -416,7 +445,7 @@ from the account's runtime permissions.
    | `GOOGLE_CLOUD_PROJECT` | Your project ID |
    | `GOOGLE_CLOUD_LOCATION` | `us-central1` |
 
-4. Scroll back to the top and select **View diff & redeploy**. In **Review
+4. Select **View diff & redeploy**. In **Review
    changes to be deployed**, check the new environment variables and leave
    **Serve this revision immediately** selected. Select **Deploy changes**.
 5. Wait for updating the service, creating the revision, and routing traffic to
@@ -437,7 +466,7 @@ to be saved to a bucket in this part.
 
 This records changes to the existing service: select the runtime identity, add
 all three variables, review the diff, and deploy the changes. Pointer movement
-and click rings are added guides.
+and click rings are added guides; rollout waiting time is shortened.
 
 </details>
 
@@ -446,9 +475,8 @@ and click rings are added guides.
 
 ![Enter text, translate it, request speech, and replay the returned audio](images/console/web-translation-speech.gif)
 
-This is the live web app after part 3 is configured. The first three frames also
-show the translation interaction used in part 2; audio becomes available only
-after speech is enabled. Pointer movement and click rings are added guides.
+This is the live web app after part 3 is configured. Audio becomes available
+only after speech is enabled. Pointer movement and click rings are added guides.
 
 </details>
 
@@ -487,19 +515,21 @@ private key. Cloud Run obtains credentials from the attached identity instead.
 <summary>Try it locally — service account impersonation and ADC</summary>
 
 First grant your developer user **Service Account Token Creator** on the web
-runtime account: **IAM & Admin → Service Accounts → translation-demo →
+runtime account: **IAM & Admin → Service Accounts → translation-demo-runtime →
 Principals with access → Grant access**. In **New principals**, enter your user
-email. Under **Assign roles → Role**, select **Service Account Token Creator**,
-then select **Save**.
-Enable the **IAM Service Account Credentials API** under **APIs & Services**.
+email. Under **Assign roles → Role**, select **Service Account Token Creator**.
+Replace any preselected role; do not leave **Service Account Admin** assigned.
+Then select **Save**. Enable the **IAM Service Account Credentials API** under
+**APIs & Services → Library** if it is not already enabled.
 
 <details open>
 <summary>Watch GIF — allow your developer identity to impersonate the runtime account</summary>
 
 ![Open Principals with access, Grant access, and select Service Account Token Creator](images/console/identity-impersonation.gif)
 
-This is an unsubmitted grant preview. Enter your own user email; do not copy
-an instructor identity. Browser sign-in and credential files are not recorded.
+This records an actual grant through **Save** on the new runtime account. Enter
+your own user email rather than copying the instructor’s identity. Interactive
+sign-in and credential files are deliberately excluded from recordings.
 
 </details>
 
@@ -577,7 +607,8 @@ longer unattended work.
      (For version control)** and **Retention (For compliance)** unchecked.
    Scroll to **Create** and select it. In **Public access will be prevented**,
    preserve the checkbox and select **Confirm**. On the created bucket's
-   **Configuration** tab, check its region, Standard storage, and private access.
+   **Configuration** tab, check its region and Standard storage. The bucket header should show
+   **Public access: Not public**. Leave other wizard options at their defaults.
 4. Repeat for a separate, globally unique output bucket.
 5. Save the [sample passage](tutorial/app/examples/passage.txt) to your machine.
    Open the input bucket's **Objects** tab. Select **Create folder**, enter
@@ -598,18 +629,23 @@ your own buckets even though everyone shares the same public image.
 
 This records the complete output-bucket creation, including each **Continue**,
 **Create**, the public-access-prevention **Confirm** dialog, and the resulting
-bucket configuration. Repeat the same process for your input bucket.
+bucket configuration. Repeat the same process for your input bucket. The GIF creates a separate
+instructor capture bucket; later upload/job GIFs use the instructor’s established
+input/output buckets. Use your worksheet’s two names consistently throughout.
 
 </details>
 
 <details open>
 <summary>Watch GIF — upload a passage and find its Storage URI</summary>
 
-![Preview folder creation and the Upload menu, then copy an existing object URI](images/console/storage-input-uri.gif)
+![Create run-001, upload passage.txt, and copy its Storage URI](images/console/storage-input-uri.gif)
 
-Folder and upload controls are shown as previews. The object-details frame uses
-the existing `rehearsal-001` passage; your tutorial uses `run-001`. The local file
-chooser and upload wait are omitted.
+This records actual folder creation, **Upload → Upload files**, successful upload,
+opening `passage.txt`, and copying that same object’s URI under `run-001`. A
+labeled static navigation detail locates the **Live object** tab above the
+recorded scroll position. The system
+file picker is represented by its selection instruction; the upload itself was
+performed and its completion is shown.
 
 </details>
 
@@ -642,10 +678,12 @@ gcloud storage cp tutorial/app/examples/passage.txt \
    account ID to `translation-audio-job`.
 2. Grant it **Agent Platform User** and **Service Usage Consumer** on your project,
    as you did for the web account. Record its email.
-3. Open the **input bucket → Permissions → Grant access**. Add the job account
-   email as principal and grant **Storage Object Viewer**.
-4. Open the **output bucket → Permissions → Grant access**. Add the same job
-   account and grant **Storage Object Creator**.
+3. Open the **input bucket → Permissions → Grant access**. Enter the job
+   account email in **New principals**. Under **Assign roles**, select
+   **Storage Object Viewer**, then select **Save**.
+4. Open the **output bucket → Permissions → Grant access**. Enter the same job
+   account in **New principals**, select **Storage Object Creator**, and select
+   **Save**.
 5. Leave the web app's runtime account unchanged. It does not need these bucket
    permissions, because its audio goes straight to the browser.
 
@@ -656,10 +694,11 @@ passages, launch executions, and read results.
 <details open>
 <summary>Watch GIF — give the job read and write permissions</summary>
 
-![Preview Object Viewer on the input bucket and Object Creator on the output bucket](images/console/storage-job-permissions.gif)
+![Open each bucket Permissions tab, grant the job its scoped role, and save](images/console/storage-job-permissions.gif)
 
-These unsaved **Grant access** forms show the job account and the two different
-roles. Enter the job account from your own project and save each grant.
+This records the complete **Permissions → Grant access → Save** flow for both
+buckets. It grants **Storage Object Viewer** on the input and **Storage Object
+Creator** on the output for the job account, preserving other principals’ grants.
 
 </details>
 
@@ -689,17 +728,21 @@ Overrides**. This is separate from the job account's Agent Platform and Storage 
 
 ### 4.3 Create the job
 
+Your signed-in deployment identity needs **Service Account User** on the job
+account to attach it. The runtime account’s own roles do not grant you that
+deployment permission.
+
 1. Open **Cloud Run → Jobs** and select **Deploy container**. The page is
    titled **Create job**.
 2. Paste the same public image used in part 2:
 
    ```text
-   cgumb/ac215-translation-demo:lecture14-batch-50d8201
+   cgumb/ac215-translation-demo:lecture14-agent-platform-20261022
    ```
 
 3. Set **Job name** to `translation-audio`, choose your region, and use **1 task**.
-4. Expand **Containers, Connections, Security**. In **Containers → Edit
-   Container → Settings**, enter `python` in **Container command**, then press
+4. Expand **Containers, Connections, Security** and open **Containers**. If the
+   container row is collapsed, expand its chevron. In **Edit Container → Settings**, enter `python` in **Container command**, then press
    **Enter** to create its chip. This replaces the image's web-server command.
 5. In **Container arguments**, enter the following as **individual arguments**,
    replacing the two bucket placeholders. Type one value and press **Enter**
@@ -730,13 +773,12 @@ Overrides**. This is separate from the job account's Agent Platform and Storage 
    | `GOOGLE_CLOUD_PROJECT` | Your project ID |
    | `GOOGLE_CLOUD_LOCATION` | `us-central1` |
 
-7. Select **Security → Service account**. Choose the job account by its email,
-   `translation-audio-job@YOUR_PROJECT_ID.iam.gserviceaccount.com`. The selector
-   displays its service-account name, which may differ from its ID.
-8. Return to **Containers**. Under **Task capacity**, set **Task timeout** to
-   `5`, **Time unit** to **minute**, and **Number of retries per failed task**
-   to `0`. In the container's **Settings**, keep **Memory** at **512 MiB** and
-   **CPU** at **1**. Keep **Number of tasks** at `1`.
+7. Under **Task capacity**, set **Task timeout** to `5`, **Time unit** to
+   **minute**, and **Number of retries per failed task** to `0`. Keep **Memory**
+   at **512 MiB**, **CPU** at **1**, and **Number of tasks** at `1`.
+8. Select the **Security** tab. In **Service account**, choose
+   `translation-audio-job@YOUR_PROJECT_ID.iam.gserviceaccount.com` by its email.
+   The selector displays the account’s name, which may differ from its ID.
 9. Leave **Execute job immediately** unchecked and select **Create**. We will
    launch it explicitly next.
 
@@ -745,9 +787,11 @@ Overrides**. This is separate from the job account's Agent Platform and Storage 
 
 ![Configure the job image, name, region, Python command, and separate batch arguments](images/console/job-command-settings.gif)
 
-This is an unsubmitted job-creation preview. The rehearsal name differs from
-the tutorial name to avoid a duplicate-name warning. Replace bucket paths with
-your own, and enter each argument separately.
+This records a fresh job creation with the tutorial name. Labeled static
+navigation details locate **Containers** and the container-row chevron; expand
+the row only if it is collapsed. Enter each argument separately and substitute
+your own bucket paths. The continuation below records the variables, **Done**,
+identity, limits, and final **Create** action.
 
 </details>
 
@@ -756,8 +800,10 @@ your own, and enter each argument separately.
 
 ![Configure speech variables, the dedicated job account, timeout, retries, and explicit execution](images/console/job-identity-limits.gif)
 
-This continues the same unsaved form. Keep one task, five minutes, zero retries,
-and **Execute job immediately** unchecked. No new job is created by this capture.
+This continues the same creation: variables, **Done**, limits, identity, and
+**Create**, followed by the new job’s empty **History**. “Not saved” can remain
+on the container card after **Done** until the whole job is created. Keep
+**Execute job immediately** unchecked so the next step launches it explicitly.
 
 </details>
 
@@ -777,9 +823,12 @@ gcloud run jobs create "$JOB_NAME" \
 
 ### 4.4 Execute it and collect the files
 
-1. Open **Cloud Run → Jobs → translation-audio** and select **Execute**.
-2. Open the new execution. Wait until its task succeeds, then inspect **Logs**.
-   The job prints its output location and exits. It does not provide a web URL.
+1. Open **Cloud Run → Jobs → translation-audio** and select **Execute**. On a
+   narrow toolbar, open **More actions** (⋮) to find **Execute**.
+2. Wait for the green success check in **History**, then open the new execution. On
+   **Tasks**, select **View logs**; scroll the table horizontally if that column
+   is off-screen. The logs show completion, the execution ID, and its exact
+   `output_uri`. The job exits; it does not provide a web URL.
 3. Open **Cloud Storage → Buckets → your output bucket → run-001**. Open the
    uniquely named attempt folder inside it.
 4. You should see:
@@ -790,8 +839,11 @@ gcloud run jobs create "$JOB_NAME" \
    | `speech.wav` | Its generated audio |
    | `manifest.json` | Completion status and output locations |
 
-5. Download the text and WAV using the object list's download action or each
-   object's details page. Read the translation and play the WAV locally.
+5. Use the object list’s download icons to retrieve the text and WAV. Depending
+   on your browser, these may open in new tabs. Read the translated text there.
+   If the WAV opens in a media tab, select **Play**, then **⋮ → Download** to
+   save it locally. Part 4.5 shows how to download the whole output folder from
+   the terminal.
 
 **Checkpoint:** the task finished, the process stopped, and its files remain in
 Storage. This is the payoff of a job: collect the outputs later, without keeping
@@ -802,11 +854,12 @@ a browser request open.
 
 ![Open a completed execution, inspect success, and find the saved audio and download controls](images/console/job-execution-results.gif)
 
-The result frames inspect **earlier successful rehearsal runs**, not a new
-execution from this recording. The clip shows the Execute control, completed-run
-history, the three saved files, and audio download/playback. Deployment and task
-waiting time are omitted; task-log inspection is not shown. Use your own output
-prefix rather than the instructor's `rehearsal-001`.
+This records a fresh console execution, `translation-audio-hq9f5`, its successful
+task logs, and its own `run-001/de2f41…/` output folder. It includes navigating to
+Storage, opening that attempt, and opening the actual text and audio. The
+media-tab **⋮ → Download** action selects the WAV download. Use your own execution
+and attempt IDs; waiting time is shortened. Some static navigation controls are
+shown as cropped details to keep their labels readable.
 
 </details>
 
@@ -853,6 +906,12 @@ extensions, not features required for this example.
 
 ### 4.5 Submit another passage from the terminal
 
+Your signed-in user needs permission to execute the job **with overrides**
+(`run.jobs.run` and `run.jobs.runWithOverrides`), as well as upload access to the
+input bucket and read access to the output bucket. These are developer
+permissions, separate from the job runtime account’s read/create permissions.
+
+
 Once the job exists, you can submit new work without returning to the console.
 The upload and execution are separate operations: a remote container cannot read
 a filename on your laptop.
@@ -897,11 +956,11 @@ for each new submission.
 <details open>
 <summary>Watch GIF — terminal upload, execution, and download</summary>
 
-![Preview the three gcloud commands for submitting and retrieving a job](images/console/terminal-job-steps.gif)
+![Run the upload, execution, and download commands successfully](images/console/terminal-job-steps.gif)
 
-This animated **dry-run command preview** comes from the helper's printed commands;
-no upload, execution, or download occurs in the clip. The displayed project and
-bucket names are rehearsal examples—use your own values.
+This animates the actual command transcripts for the steps above: upload,
+successful Spanish job execution, and download. The displayed project and bucket
+names are rehearsal examples; substitute your own values.
 
 </details>
 
@@ -925,11 +984,11 @@ folder. You have submitted cloud work and retrieved the result from your laptop.
 <details open>
 <summary>Watch GIF — the helper combines the three commands</summary>
 
-![Preview one helper invocation and the commands it would run](images/console/terminal-job-helper.gif)
+![Run the helper and retrieve completed cloud outputs](images/console/terminal-job-helper.gif)
 
-This is actual helper **dry-run output**, animated for readability. It does not
-launch a cloud job or demonstrate a completed download. Use the command above
-without `--dry-run` when you are ready to submit work.
+This animates a complete, actual helper invocation: upload, successful French
+job execution and download. It prints `Downloaded results` only after finding
+a complete manifest. All command output is retained; the animation presents the saved terminal transcript.
 
 </details>
 
@@ -996,12 +1055,15 @@ For a fuller command reference, see the [job workflow guide](docs/job-workflow.m
 The source and build instructions live in the
 [application development guide](tutorial/app/README.md). Source inspection is
 optional for the deployment walkthrough. The helper is
-[`tutorial/run_job.py`](tutorial/run_job.py).
+[`tutorial/run_job.py`](tutorial/run_job.py). To create or reset an isolated
+rehearsal stack using gcloud, use the [spin-up and teardown guide](docs/lifecycle.md).
+Both lifecycle scripts preview their actions by default and track the resources
+they own in a local manifest.
 
 The public image's tested Linux AMD64 digest is:
 
 ```text
-sha256:a1d4858aca190421b8aabeb0d5fcc6fda0d0902486ca5f34319adcf42453c6e6
+sha256:c17b6db09f7402febb582bf327920ec9ca4eee113f5ddefa38e9da5619dbe72e
 ```
 
 It is published under a temporary personal Docker Hub namespace until the
@@ -1017,11 +1079,13 @@ still deserves an instructor rehearsal; button labels can vary as Google updates
 the UI. Command alternatives have been checked against the matching documentation,
 but not every alternative was separately executed on a new student project.
 
-- [Console function rehearsal record](docs/function-rehearsal.md)
-- [Cloud Run rehearsal record](docs/cloud-run-rehearsal.md)
-- [Job and helper rehearsal record](docs/job-rehearsal.md)
-- [Teaching-flow review](docs/flow-review-opus55.md)
-- [Original tutorial](docs/original-tutorial.md)
+- [Current recording coverage](docs/console-gif-coverage.md)
+- [Audit findings and resolutions](docs/console-audit-resolution.md)
+- [Earlier console function rehearsal record](docs/function-rehearsal.md)
+- [Earlier Cloud Run rehearsal record](docs/cloud-run-rehearsal.md)
+- [Earlier job and helper rehearsal record](docs/job-rehearsal.md)
+- [Historical teaching-flow review](docs/flow-review-opus55.md)
+- [Historical original tutorial](docs/original-tutorial.md)
 
 GitHub's native
 [collapsed sections](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections)

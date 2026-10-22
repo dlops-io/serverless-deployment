@@ -1,4 +1,4 @@
-"""Vertex AI Gemini TTS using ADC, with browser-playable WAV output.
+"""Agent Platform Gemini TTS using ADC, with browser-playable WAV output.
 
 Reference: https://docs.cloud.google.com/text-to-speech/docs/gemini-tts
 The REST API keeps this adapter independent of googletrans's older httpx pin.
@@ -36,7 +36,7 @@ def enabled():
 
 
 def pcm_to_wav(pcm: bytes) -> bytes:
-    """Vertex TTS returns mono, 24 kHz, 16-bit PCM, without WAV headers."""
+    """Gemini TTS returns mono, 24 kHz, 16-bit PCM, without WAV headers."""
     if not pcm or len(pcm) % 2:
         raise SpeechProviderError("The speech provider returned invalid PCM audio.")
     output = io.BytesIO()
@@ -73,7 +73,7 @@ def decode_response(data: dict) -> bytes:
 
 def synthesize(text: str, language: str) -> tuple[bytes, str]:
     if not enabled():
-        raise SpeechConfigurationError("Speech is disabled. Enable it for part 3 after configuring Vertex AI access.")
+        raise SpeechConfigurationError("Speech is disabled. Enable it for part 3 after configuring Agent Platform access.")
     if not isinstance(text, str) or not text.strip():
         raise ValueError("Enter some translated text to speak.")
     if len(text.encode("utf-8")) > 4000:
@@ -85,7 +85,7 @@ def synthesize(text: str, language: str) -> tuple[bytes, str]:
     model = os.environ.get("VERTEX_TTS_MODEL", "gemini-2.5-flash-tts")
     voice = os.environ.get("VERTEX_TTS_VOICE", "Kore")
     if not project:
-        raise SpeechConfigurationError("Set GOOGLE_CLOUD_PROJECT to the project authorized for Vertex AI.")
+        raise SpeechConfigurationError("Set GOOGLE_CLOUD_PROJECT to the project authorized for Agent Platform.")
     if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", value) for value in (project, location, model, voice)):
         raise SpeechConfigurationError("Invalid project, location, model, or voice configuration.")
     host = "aiplatform.googleapis.com" if location == "global" else f"{location}-aiplatform.googleapis.com"
@@ -110,13 +110,13 @@ def synthesize(text: str, language: str) -> tuple[bytes, str]:
     except requests.RequestException as exc:
         raise SpeechProviderError("The speech request failed or timed out. Try a shorter passage.") from exc
     if response.status_code in (401, 403):
-        raise SpeechConfigurationError("Vertex AI access denied. Check the caller identity, enabled API, inference permissions, and quota project.")
+        raise SpeechConfigurationError("Agent Platform access denied. Check the caller identity, enabled API, inference permissions, and quota project.")
     if response.status_code == 404:
-        raise SpeechConfigurationError("The speech model was not found. Check the selected Vertex AI model and location.")
+        raise SpeechConfigurationError("The speech model was not found. Check the selected Agent Platform model and location.")
     if response.status_code == 429:
         raise SpeechProviderError("The speech service quota is temporarily exhausted. Try again later.")
     if not response.ok:
-        raise SpeechProviderError(f"Vertex AI rejected the speech request (HTTP {response.status_code}).")
+        raise SpeechProviderError(f"Agent Platform rejected the speech request (HTTP {response.status_code}).")
     try:
         audio = decode_response(response.json())
     except (ValueError, TypeError, AttributeError) as exc:

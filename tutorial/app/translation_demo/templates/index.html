@@ -48,11 +48,11 @@
       </section>
     </div>
     <button id="translate-button" type="submit">Translate</button>
-    <button id="speech-button" type="button" disabled {% if speech_enabled %}title="Translate some text first"{% else %}title="Enable speech with Vertex AI credentials in part 3"{% endif %}>{% if speech_enabled %}Play audio{% else %}Play audio · enable in part 3{% endif %}</button>
+    <button id="speech-button" type="button" disabled {% if speech_enabled %}title="Translate some text first"{% else %}title="Enable speech with Agent Platform credentials in part 3"{% endif %}>{% if speech_enabled %}Play audio{% else %}Play audio · enable in part 3{% endif %}</button>
     <audio id="speech-audio" controls hidden aria-label="Spoken translation"></audio>
     <p id="status" role="status" aria-live="polite"></p>
   </form>
-  <p class="small">Translation uses an external provider.{% if speech_enabled %} Speech uses Vertex AI.{% else %} Speech is disabled in this deployment.{% endif %}</p>
+  <p class="small">Translation uses an external provider.{% if speech_enabled %} Speech uses Agent Platform.{% else %} Speech is disabled in this deployment.{% endif %}</p>
 </main>
 <script>
   const form = document.getElementById('translation-form');

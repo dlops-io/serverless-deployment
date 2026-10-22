@@ -1,5 +1,9 @@
 # Batch job rehearsal
 
+> Earlier rehearsal record. Image versions, service names and UI details below
+> describe that run. Use the [current README](../README.md) for student steps
+> and [current recording coverage](console-gif-coverage.md) for the replacement captures.
+
 The public image `cgumb/ac215-translation-demo:lecture14-batch-50d8201` supports
 both the web service and the batch command. Its digest is
 `sha256:a1d4858aca190421b8aabeb0d5fcc6fda0d0902486ca5f34319adcf42453c6e6`.

@@ -43,7 +43,7 @@ def main(argv=None):
             "status": "plan_only", "input_characters": len(text) if text is not None else None,
             "input_uri": args.input_uri, "source_language": args.src,
             "destination_language": args.dest, "output_uri": args.output_uri,
-            "steps": ["Read the passage", "Translate the complete passage", "Synthesize speech with Vertex AI",
+            "steps": ["Read the passage", "Translate the complete passage", "Synthesize speech with Agent Platform",
                       "Save text, audio, and completion manifest to a unique attempt prefix", "Exit"],
             "implemented": True,
         }, indent=2))

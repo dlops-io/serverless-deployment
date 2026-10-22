@@ -1,4 +1,4 @@
-"""Part 2 translation UI and optional part 3 Vertex AI speech."""
+"""Part 2 translation UI and optional part 3 Agent Platform speech."""
 
 from flask import Flask, jsonify, render_template, request
 

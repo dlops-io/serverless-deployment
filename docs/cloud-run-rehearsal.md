@@ -1,5 +1,9 @@
 # Cloud Run rehearsal
 
+> Earlier rehearsal record. Image versions, service names and UI details below
+> describe that run. Use the [current README](../README.md) for student steps
+> and [current recording coverage](console-gif-coverage.md) for the replacement captures.
+
 The instructor confirmed local translation and browser audio playback. Live cloud
 checks then returned HTTP 200 for the UI, translation, and speech. The speech
 response was valid mono 24 kHz WAV. The instructor also confirmed cloud browser playback. This record describes the

@@ -11,3 +11,6 @@ trainer.tar.gz
 **/dist/
 .env
 .env.*
+
+# Local cloud rehearsal ownership manifests
+/local-state/
