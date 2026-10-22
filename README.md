@@ -164,11 +164,24 @@ without checking them.
 
 4. Change `dest=fr` to `dest=el` or `dest=hi` and try again. For Chinese, use
    `dest=zh-cn` for Simplified Chinese.
-5. Open the service's **Logs** tab and find the requests you just made.
+5. Open **Observability → Logs** in service details and find the requests you
+   just made. Confirm an HTTP **200** response for the translation request.
 
 **Checkpoint:** the same endpoint accepts different inputs without a redeploy.
 The question mark begins the query string; ampersands separate its parameters.
 The `src` and `dest` parameters identify languages, not cloud regions.
+
+<details>
+<summary>Console capture — source files, completed deployment, and live response</summary>
+
+![Edit the handler and dependencies, confirm build completion, then view the French translation](images/console/function-deploy-test.gif)
+
+These screenshots from the console rehearsal show the handler, dependencies,
+completed rollout, and live response. Build waiting time is omitted. The
+translation request returned **Bonjour à tous**, and its request log showed
+HTTP **200**.
+
+</details>
 
 <details>
 <summary>Equivalent gcloud commands — deploy and call the function</summary>
@@ -810,6 +823,7 @@ still deserves an instructor rehearsal; button labels can vary as Google updates
 the UI. Command alternatives have been checked against the matching documentation,
 but not every alternative was separately executed on a new student project.
 
+- [Console function rehearsal record](docs/function-rehearsal.md)
 - [Cloud Run rehearsal record](docs/cloud-run-rehearsal.md)
 - [Job and helper rehearsal record](docs/job-rehearsal.md)
 - [Teaching-flow review](docs/flow-review-opus55.md)
