@@ -1010,7 +1010,8 @@ a complete manifest. All command output is retained; the animation presents the 
   cloud files and partial local downloads for inspection, rather than deleting
   them automatically. A new invocation allocates a new run folder.
 
-For a fuller command reference, see the [job workflow guide](docs/job-workflow.md).
+For the application CLI options and local development commands, see the
+[application guide](tutorial/app/README.md).
 
 </details>
 
@@ -1052,42 +1053,24 @@ For a fuller command reference, see the [job workflow guide](docs/job-workflow.m
 </details>
 
 <details>
-<summary>For instructors and contributors — source, rehearsal records, and image version</summary>
+<summary>Optional source, setup helpers, and image version</summary>
 
 The source and build instructions live in the
 [application development guide](tutorial/app/README.md). Source inspection is
-optional for the deployment walkthrough. The helper is
-[`tutorial/run_job.py`](tutorial/run_job.py). To create or reset an isolated
-rehearsal stack using gcloud, use the [spin-up and teardown guide](docs/lifecycle.md).
+optional for the deployment walkthrough. The upload/execute/download helper is
+[`tutorial/run_job.py`](tutorial/run_job.py). To create or remove a separate
+practice stack using gcloud, use the [setup and cleanup guide](docs/lifecycle.md).
 Both lifecycle scripts preview their actions by default and track the resources
 they own in a local manifest.
 
-The public image's tested Linux AMD64 digest is:
+The public image's Linux AMD64 digest is:
 
 ```text
 sha256:c17b6db09f7402febb582bf327920ec9ca4eee113f5ddefa38e9da5619dbe72e
 ```
 
-It is published under a temporary personal Docker Hub namespace until the
-maintainer has course-organization publishing access. Students supply their own
-project, runtime accounts, and buckets; the image contains no instructor
-credentials. The earlier private Artifact Registry rehearsal image is not the
-student distribution path.
-
-The instructor confirmed local and cloud browser playback. Automated live
-rehearsals covered public image pull, service translation/speech, two direct job
-executions, output retrieval, and the combined helper. The console click-through
-still deserves an instructor rehearsal; button labels can vary as Google updates
-the UI. Command alternatives have been checked against the matching documentation,
-but not every alternative was separately executed on a new student project.
-
-- [Current recording coverage](docs/console-gif-coverage.md)
-- [Audit findings and resolutions](docs/console-audit-resolution.md)
-- [Earlier console function rehearsal record](docs/function-rehearsal.md)
-- [Earlier Cloud Run rehearsal record](docs/cloud-run-rehearsal.md)
-- [Earlier job and helper rehearsal record](docs/job-rehearsal.md)
-- [Historical teaching-flow review](docs/flow-review-opus55.md)
-- [Historical original tutorial](docs/original-tutorial.md)
+Use your own project, runtime accounts, and buckets. The shared image contains
+no instructor credentials.
 
 GitHub's native
 [collapsed sections](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections)

@@ -14,3 +14,30 @@ trainer.tar.gz
 
 # Local cloud rehearsal ownership manifests
 /local-state/
+
+# Python-generated caches
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Local-only planning, agent reviews, and rehearsal records
+/.internal/
+/docs/cloud-run-rehearsal.md
+/docs/console-audit-opus55.md
+/docs/console-audit-resolution.md
+/docs/console-closeout-opus55.md
+/docs/console-final-opus55-web.md
+/docs/console-gif-coverage.md
+/docs/console-recheck-opus55-a.md
+/docs/console-recheck-opus55-b.md
+/docs/console-recheck-opus55-c.md
+/docs/console-signoff-opus55.md
+/docs/flow-review-opus55.md
+/docs/function-rehearsal.md
+/docs/job-rehearsal.md
+/docs/job-workflow.md
+/docs/lifecycle-audit-opus55.md
+/docs/lifecycle-final-opus55.md
+/docs/lifecycle-live-check.md
+/docs/lifecycle-recheck-opus55.md
+/docs/original-tutorial.md

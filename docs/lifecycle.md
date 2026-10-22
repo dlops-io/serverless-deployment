@@ -1,10 +1,9 @@
-# Recreate an isolated tutorial stack
+# Optional CLI setup and cleanup
 
-These instructor helpers create a separate stack for a rehearsal and remove only
+These optional helpers create a separate practice stack and remove only
 resources recorded in its ownership manifest. They automate the same function,
 web service, runtime identities, buckets and job that students create through the
-console. They are optional; **use the console walkthrough when teaching the new
-concepts**. Neither helper executes the audio job automatically.
+console. **Follow the console walkthrough first to learn the components.** Neither helper executes the audio job automatically.
 
 Run from the repository root with Python 3 and a current, signed-in `gcloud` CLI.
 Applied builds and deployments stream gcloud progress to the terminal.
@@ -65,7 +64,7 @@ Defaults match the tutorial: Toronto (`northamerica-northeast2`) for Cloud Run
 and Storage, `us-central1` for the speech model, and the tutorial's published
 `cgumb/ac215-translation-demo@sha256:c17b6db09f7402febb582bf327920ec9ca4eee113f5ddefa38e9da5619dbe72e` image. Override with
 `--region`, `--model-location`, and `--image`. The default digest fixes the
-rehearsal to the image bytes tested for this tutorial; a tag can change later.
+practice stack to the image bytes tested for this tutorial; a tag can change later.
 This does **not** build or publish the app image; the source-based function is built by Google Cloud.
 
 The script enables the Cloud Run, Cloud Build, Artifact Registry, Agent Platform,
@@ -142,7 +141,7 @@ python tutorial/run_job.py tutorial/app/examples/passage.txt \
 Keep the manifest until cleanup. It contains resource names and a random
 ownership token, **not credentials**. Do not publish local state in Git. The
 script refuses to adopt existing resources or overwrite an existing manifest.
-To create another rehearsal, choose a new prefix and manifest, or remove the
+To create another practice stack, choose a new prefix and manifest, or remove the
 old stack first and archive its completed manifest before starting again.
 
 Preview the cleanup:

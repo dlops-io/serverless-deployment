@@ -4,12 +4,6 @@ Part 2 has a translation UI and HTTP route. Live translation requires outbound
 network access and a functioning googletrans provider. Part 3 implements Agent Platform speech and browser WAV playback, enabled explicitly
 after configuring identity. Part 4 reads a UTF-8 passage and saves translated text, WAV audio, and a completion
 manifest to private Cloud Storage, then exits.
-Offline speech checks pass. A real Agent Platform call using impersonated service-account
-ADC has returned valid WAV audio both from local Python and through the container
-HTTP route. Local browser playback was confirmed by the instructor. The deployed Cloud Run
-UI, translation route, and speech route also pass live checks; the instructor also confirmed cloud
-browser playback.
-
 ## Local development
 
 With uv and Python 3.12:
@@ -35,7 +29,7 @@ uv run python -m translation_demo batch --plan \
 The plan command makes no API calls, creates no files, and uploads nothing.
 Without `--plan`, batch execution calls the real providers and uploads outputs,
 requiring speech configuration and Storage permissions. See the
-[job walkthrough](../../docs/job-workflow.md).
+[job walkthrough](../../README.md#part-4-generate-and-save-a-translated-audio-edition).
 
 ## Local development against GCP
 
@@ -45,7 +39,6 @@ inspect the response**. Rebuilding and publishing an image belongs later.
 
 The translation provider in part 2 does not use GCP credentials. The following
 setup applies to Agent Platform speech and, later, Cloud Storage uploads.
-Speech, Storage input, and batch uploads are implemented.
 
 ### Create the runtime identity: console or CLI
 
@@ -232,7 +225,7 @@ permissions. A failing operation produces a nonzero exit status.
 ## Public tutorial image
 
 Use `cgumb/ac215-translation-demo:lecture14-agent-platform-20261022` for the classroom
-console walkthrough. Anonymous pull has been verified. The pinned digest is
+console walkthrough. The pinned digest is
 `sha256:c17b6db09f7402febb582bf327920ec9ca4eee113f5ddefa38e9da5619dbe72e`.
 
 ```bash
@@ -240,11 +233,9 @@ docker run --rm -p 8080:8080 cgumb/ac215-translation-demo:lecture14-agent-platfo
 ```
 
 Speech remains disabled until part 3 credentials and environment settings are
-provided. The same image can run the implemented batch command, but real execution needs
-its own job identity and bucket settings. See the
-[rehearsal record](../../docs/cloud-run-rehearsal.md).
-The original tutorial's `latest` image was not changed. Future builds should use
-a new explicit version tag and record their tested digest.
+provided. The same image can run the batch command, but real execution needs
+its own job identity and bucket settings. Follow [Part 4](../../README.md#part-4-generate-and-save-a-translated-audio-edition) for setup.
+For your own builds, use a new explicit version tag and record its digest.
 
 Students can follow the final tutorial using prebuilt images. These source files,
 the Dockerfile, and CLI are available for optional inspection; reading them is
