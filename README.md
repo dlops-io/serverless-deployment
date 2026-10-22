@@ -259,6 +259,16 @@ deploy that existing image and give the app a public URL.
 If you are following only the console demonstration, you can observe the
 instructor's local run and continue to the next step.
 
+<details open>
+<summary>Watch GIF — try the prebuilt container locally</summary>
+
+![Translate a short passage in the local container while speech remains disabled](images/console/container-local-app.gif)
+
+This is the image running on **localhost:8086**, with no speech credentials or
+speech setting. The same image is deployed to Cloud Run next.
+
+</details>
+
 ### 2.2 Deploy the same image
 
 1. Open **Cloud Run → Services → Deploy container**.
@@ -274,8 +284,9 @@ instructor's local run and continue to the next step.
 5. Leave the image's startup command unchanged. Do not add speech environment
    variables yet. Select **Create** and wait until the service is ready.
 6. Copy its **URL**, open the page, and repeat your local translation.
-7. Open **Revisions** and **Logs** in service details. A revision is a deployed
-   version of the service's image and configuration.
+7. Open **Revision History** (sometimes **Revisions**) and **Observability →
+   Logs** in service details. A revision is a deployed version of the service's
+   image and configuration.
 
 <details open>
 <summary>Watch GIF — deploy the existing container, steps 1–5</summary>
@@ -345,10 +356,24 @@ Two permissions questions are separate: **who may call our public app**, and
 2. Open **IAM & Admin → Service Accounts → Create service account**.
 3. Use `translation-demo` as the account ID, with a descriptive display name.
    Its email will be `translation-demo@YOUR_PROJECT_ID.iam.gserviceaccount.com`.
-4. In the step for granting this account access to the project, add **Vertex AI
-   User** and **Service Usage Consumer**, then finish creation. The first grants
+4. Expand **Permissions** (or the step for granting project access), and add
+   **Vertex AI User** and **Service Usage Consumer**, then finish creation. The first grants
    model access; the second permits using the project for API quota/billing.
 5. Record the account email. You do not need to create or download a key.
+
+In the captured console, **Vertex AI User** appears as **Agent Platform User**;
+the role ID remains `roles/aiplatform.user`. Use that role ID to identify it if
+the console label differs from the instructions.
+
+<details open>
+<summary>Watch GIF — create and inspect the runtime identity</summary>
+
+![Open service accounts, preview account creation, and inspect the runtime roles and email](images/console/identity-create.gif)
+
+The creation form is an unsubmitted preview; the final frames inspect the existing
+rehearsal account. API enablement is not shown. Choose your own unique account ID.
+
+</details>
 
 <details>
 <summary>Equivalent gcloud commands — create the speech runtime identity</summary>
@@ -398,6 +423,17 @@ service account. Audio is returned directly to the browser; no audio files have
 to be saved to a bucket in this part.
 
 <details open>
+<summary>Watch GIF — runtime identity and speech environment settings</summary>
+
+![Select the app service account and configure the speech environment variables](images/console/identity-speech-settings.gif)
+
+This previews the equivalent advanced controls in the **Create service** form.
+For your existing app, enter through **Edit & deploy new revision** as described
+above. The capture does not create or deploy another service.
+
+</details>
+
+<details open>
 <summary>Watch GIF — verify translation and browser audio</summary>
 
 ![Enter text, translate it, request speech, and replay the returned audio](images/console/web-translation-speech.gif)
@@ -444,8 +480,19 @@ private key. Cloud Run obtains credentials from the attached identity instead.
 
 First grant your developer user **Service Account Token Creator** on the web
 runtime account: **IAM & Admin → Service Accounts → translation-demo →
-Permissions → Grant access**. Add your user email as principal and that role.
+Principals with access → Grant access**. Add your user email as principal and that role.
 Enable the **IAM Service Account Credentials API** under **APIs & Services**.
+
+<details open>
+<summary>Watch GIF — allow your developer identity to impersonate the runtime account</summary>
+
+![Open Principals with access, Grant access, and select Service Account Token Creator](images/console/identity-impersonation.gif)
+
+This is an unsubmitted grant preview. Enter your own user email; do not copy
+an instructor identity. Browser sign-in and credential files are not recorded.
+
+</details>
+
 Equivalent commands, followed by the interactive application login:
 
 ```bash
@@ -520,6 +567,27 @@ The input bucket holds uploaded passages. The output bucket will hold generated
 text, audio, and completion records. Neither bucket needs to be public. You use
 your own buckets even though everyone shares the same public image.
 
+<details open>
+<summary>Watch GIF — create a private bucket</summary>
+
+![Choose a unique bucket name, region, Standard storage, and private Uniform access](images/console/storage-bucket-setup.gif)
+
+This is a creation-form preview, ending at **Create** without submitting a new
+bucket. Repeat the same process for your output bucket.
+
+</details>
+
+<details open>
+<summary>Watch GIF — upload a passage and find its Storage URI</summary>
+
+![Preview folder creation and the Upload menu, then copy an existing object URI](images/console/storage-input-uri.gif)
+
+Folder and upload controls are shown as previews. The object-details frame uses
+the existing `rehearsal-001` passage; your tutorial uses `run-001`. The local file
+chooser and upload wait are omitted.
+
+</details>
+
 <details>
 <summary>Equivalent gcloud commands — create buckets and upload the first passage</summary>
 
@@ -559,6 +627,16 @@ gcloud storage cp tutorial/app/examples/passage.txt \
 **Checkpoint:** the job account can read input, call the speech model, and create
 output files. Your own console/CLI identity needs separate permission to upload
 passages, launch executions, and read results.
+
+<details open>
+<summary>Watch GIF — give the job read and write permissions</summary>
+
+![Preview Object Viewer on the input bucket and Object Creator on the output bucket](images/console/storage-job-permissions.gif)
+
+These unsaved **Grant access** forms show the job account and the two different
+roles. Enter the job account from your own project and save each grant.
+
+</details>
 
 <details>
 <summary>Equivalent gcloud commands — grant the job's runtime permissions</summary>
@@ -628,6 +706,27 @@ Overrides**. This is separate from the job account's Vertex/Storage access.
 9. Leave **Execute job immediately** unchecked and select **Create**. We will
    launch it explicitly next.
 
+<details open>
+<summary>Watch GIF — job image, command, and individual arguments</summary>
+
+![Configure the job image, name, region, Python command, and separate batch arguments](images/console/job-command-settings.gif)
+
+This is an unsubmitted job-creation preview. The rehearsal name differs from
+the tutorial name to avoid a duplicate-name warning. Replace bucket paths with
+your own, and enter each argument separately.
+
+</details>
+
+<details open>
+<summary>Watch GIF — job environment, runtime identity, and task limits</summary>
+
+![Configure speech variables, the dedicated job account, timeout, retries, and explicit execution](images/console/job-identity-limits.gif)
+
+This continues the same unsaved form. Keep one task, five minutes, zero retries,
+and **Execute job immediately** unchecked. No new job is created by this capture.
+
+</details>
+
 <details>
 <summary>Equivalent gcloud commands — create the job</summary>
 
@@ -663,6 +762,19 @@ gcloud run jobs create "$JOB_NAME" \
 **Checkpoint:** the task finished, the process stopped, and its files remain in
 Storage. This is the payoff of a job: collect the outputs later, without keeping
 a browser request open.
+
+<details open>
+<summary>Watch GIF — execution history and saved results</summary>
+
+![Open a completed execution, inspect success, and find the saved audio and download controls](images/console/job-execution-results.gif)
+
+The result frames inspect **earlier successful rehearsal runs**, not a new
+execution from this recording. The clip shows the Execute control, completed-run
+history, the three saved files, and audio download/playback. Deployment and task
+waiting time are omitted; task-log inspection is not shown. Use your own output
+prefix rather than the instructor's `rehearsal-001`.
+
+</details>
 
 <details>
 <summary>Equivalent gcloud commands — execute, then download</summary>
@@ -748,6 +860,17 @@ Argument overrides replace the complete argument list for this execution; the
 job's saved defaults still point to the first French example. Use a fresh prefix
 for each new submission.
 
+<details open>
+<summary>Watch GIF — terminal upload, execution, and download</summary>
+
+![Preview the three gcloud commands for submitting and retrieving a job](images/console/terminal-job-steps.gif)
+
+This animated **dry-run command preview** comes from the helper's printed commands;
+no upload, execution, or download occurs in the clip. The displayed project and
+bucket names are rehearsal examples—use your own values.
+
+</details>
+
 ### 4.6 Combine upload, execution, and download with the helper
 
 Now that you have seen the underlying steps, use the local helper to combine
@@ -764,6 +887,17 @@ The helper prints each gcloud command, uploads the file, waits for the job to
 succeed, downloads its output, and checks for the completion manifest and files.
 Open the reported local result folder and play `speech.wav` inside its attempt
 folder. You have submitted cloud work and retrieved the result from your laptop.
+
+<details open>
+<summary>Watch GIF — the helper combines the three commands</summary>
+
+![Preview one helper invocation and the commands it would run](images/console/terminal-job-helper.gif)
+
+This is actual helper **dry-run output**, animated for readability. It does not
+launch a cloud job or demonstrate a completed download. Use the command above
+without `--dry-run` when you are ready to submit work.
+
+</details>
 
 <details>
 <summary>More detail — helper options, naming, and authentication</summary>
