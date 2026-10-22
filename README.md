@@ -94,7 +94,8 @@ handler and its dependencies. Google builds and runs the container for you.
 
 ### 1.1 Create the function
 
-1. In the console, open **Cloud Run** and select **Write a function**.
+1. In the console, open **Cloud Run → Services** and select **Write a function**.
+   On a narrow window, it can be under the toolbar’s **More actions** menu.
 2. If prompted to enable required APIs, enable them and return to the form.
 3. Set **Service name** to `translate-function` and choose your region.
 4. Select **Python 3.12** as the runtime. Do not use the old tutorial's Python 3.10
@@ -104,6 +105,20 @@ handler and its dependencies. Google builds and runs the container for you.
 6. Wait for the service to be created. Open its **Source** editor if the console
    does not take you there automatically. The initial service can contain sample
    code; we replace that next.
+
+<details>
+<summary>Console navigation — opening the function creation form</summary>
+
+![Cloud Run Services: choose Write a function, then the inline function creation form](images/console/function-entry.gif)
+
+The form is titled **Create service** even though you selected a function.
+The animation stops before entering settings or creating a resource. Choose
+your region and Python runtime as described above; do not keep the defaults
+without checking them.
+
+[Still image of the function creation form](images/console/function-create.png).
+
+</details>
 
 ### 1.2 Supply the code and dependencies
 
