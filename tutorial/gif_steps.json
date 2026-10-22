@@ -1,0 +1,283 @@
+{
+  "function-setup.gif": {
+    "period_ms": 2250,
+    "labels": [
+      "Step 1.1.1",
+      "Step 1.1.3",
+      "Step 1.1.3",
+      "Step 1.1.3",
+      "Step 1.1.4",
+      "Step 1.1.5",
+      "Step 1.1.5",
+      "Step 1.1.6",
+      "Step 1.1.6"
+    ],
+    "duration_ms": 20250
+  },
+  "function-deploy-test.gif": {
+    "period_ms": 2250,
+    "labels": [
+      "Step 1.2.1",
+      "Step 1.2.1",
+      "Step 1.2.2",
+      "Steps 1.2.2–1.2.4",
+      "Step 1.2.4",
+      "Step 1.2.4",
+      "Step 1.3.1",
+      "Step 1.3.2",
+      "Step 1.3.3",
+      "Step 1.3.4",
+      "Step 1.3.5",
+      "Step 1.3.5",
+      "Step 1.3.5"
+    ],
+    "duration_ms": 29250
+  },
+  "container-local-app.gif": {
+    "period_ms": 2700,
+    "labels": [
+      "Step 2.1.1",
+      "Step 2.1.2",
+      "Step 2.1.3",
+      "Steps 2.1.3–2.1.4",
+      "Step 2.1.4"
+    ],
+    "duration_ms": 13500
+  },
+  "container-setup.gif": {
+    "period_ms": 2500,
+    "labels": [
+      "Step 2.2.1",
+      "Steps 2.2.2–2.2.3",
+      "Step 2.2.3",
+      "Step 2.2.4",
+      "Step 2.2.4",
+      "Steps 2.2.5–2.2.6",
+      "Step 2.2.6",
+      "Step 2.2.6",
+      "Step 2.2.6",
+      "Steps 2.2.7–2.2.8",
+      "Step 2.2.8",
+      "Step 2.2.9",
+      "Step 2.2.9",
+      "Step 2.2.9",
+      "Step 2.2.10",
+      "Step 2.2.10",
+      "Step 2.2.10",
+      "Step 2.2.4"
+    ],
+    "duration_ms": 45000
+  },
+  "identity-create.gif": {
+    "period_ms": 2300,
+    "labels": [
+      "Step 3.1.2",
+      "Step 3.1.3",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.4",
+      "Step 3.1.5"
+    ],
+    "duration_ms": 23000
+  },
+  "identity-impersonation.gif": {
+    "period_ms": 2300,
+    "labels": [
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation",
+      "Section 3.3 · service account impersonation"
+    ],
+    "duration_ms": 18400
+  },
+  "identity-speech-settings.gif": {
+    "period_ms": 2500,
+    "labels": [
+      "Step 3.2.2",
+      "Step 3.2.2",
+      "Steps 3.2.2–3.2.3",
+      "Step 3.2.3",
+      "Step 3.2.3",
+      "Step 3.2.3",
+      "Step 3.2.3",
+      "Step 3.2.4",
+      "Step 3.2.4",
+      "Step 3.2.5",
+      "Step 3.2.5"
+    ],
+    "duration_ms": 27500
+  },
+  "web-translation-speech.gif": {
+    "period_ms": 2500,
+    "labels": [
+      "Step 3.2.6",
+      "Step 3.2.6",
+      "Step 3.2.6",
+      "Step 3.2.6"
+    ],
+    "duration_ms": 10000
+  },
+  "storage-bucket-setup.gif": {
+    "period_ms": 3010,
+    "labels": [
+      "Step 4.1.1",
+      "Step 4.1.2",
+      "Step 4.1.2",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4",
+      "Steps 4.1.3–4.1.4"
+    ],
+    "duration_ms": 51170
+  },
+  "storage-input-uri.gif": {
+    "period_ms": 2700,
+    "labels": [
+      "Step 4.1.5",
+      "Step 4.1.5",
+      "Step 4.1.5",
+      "Step 4.1.5",
+      "Step 4.1.5",
+      "Step 4.1.6",
+      "Step 4.1.6",
+      "Step 4.1.6",
+      "Step 4.1.6"
+    ],
+    "duration_ms": 24300
+  },
+  "storage-job-permissions.gif": {
+    "period_ms": 2300,
+    "labels": [
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.3",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4",
+      "Step 4.2.4"
+    ],
+    "duration_ms": 36800
+  },
+  "job-command-settings.gif": {
+    "period_ms": 2700,
+    "labels": [
+      "Step 4.3.1",
+      "Steps 4.3.2–4.3.3",
+      "Step 4.3.3",
+      "Step 4.3.3",
+      "Steps 4.3.3–4.3.4",
+      "Step 4.3.4",
+      "Step 4.3.4",
+      "Step 4.3.4",
+      "Step 4.3.4",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5",
+      "Step 4.3.5"
+    ],
+    "duration_ms": 54000
+  },
+  "job-identity-limits.gif": {
+    "period_ms": 2700,
+    "labels": [
+      "Step 4.3.6",
+      "Step 4.3.6",
+      "Step 4.3.6",
+      "Step 4.3.6",
+      "Step 4.3.6",
+      "Step 4.3.7",
+      "Step 4.3.8",
+      "Step 4.3.8",
+      "Step 4.3.8",
+      "Step 4.3.8",
+      "Step 4.3.9",
+      "Step 4.3.9"
+    ],
+    "duration_ms": 32400
+  },
+  "job-execution-results.gif": {
+    "period_ms": 2700,
+    "labels": [
+      "Step 4.3.9",
+      "Step 4.4.1",
+      "Step 4.4.1",
+      "Step 4.4.2",
+      "Step 4.4.2",
+      "Step 4.4.2",
+      "Step 4.4.2",
+      "Step 4.4.2",
+      "Step 4.4.3",
+      "Step 4.4.3",
+      "Step 4.4.3",
+      "Step 4.4.3",
+      "Step 4.4.3",
+      "Step 4.4.4",
+      "Step 4.4.5",
+      "Step 4.4.5",
+      "Step 4.4.5",
+      "Step 4.4.5",
+      "Step 4.4.5"
+    ],
+    "duration_ms": 51300
+  },
+  "terminal-job-steps.gif": {
+    "timeline": [
+      {
+        "at_ms": 0,
+        "label": "Step 4.5.2"
+      },
+      {
+        "at_ms": 8050,
+        "label": "Step 4.5.3"
+      },
+      {
+        "at_ms": 24100,
+        "label": "Step 4.5.4"
+      }
+    ],
+    "duration_ms": 36100
+  },
+  "terminal-job-helper.gif": {
+    "timeline": [
+      {
+        "at_ms": 0,
+        "label": "Section 4.6 · upload, execute, download helper"
+      }
+    ],
+    "duration_ms": 29300
+  }
+}

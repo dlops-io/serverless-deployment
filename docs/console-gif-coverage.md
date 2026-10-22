@@ -63,3 +63,16 @@ The original audit is a snapshot of commit `396668f` in
 passed the [final Opus 5.5 visual review](console-signoff-opus55.md). Its remaining
 wording and annotation corrections are recorded in
 [the resolution report](console-audit-resolution.md).
+
+## README step headers
+
+Each GIF has a top ribbon identifying the current README step, changing as the
+action changes. Unnumbered sections 3.3 and 4.6 use their section number. The
+original captions, cursor guides, all 714 screenshot/terminal frames and every
+frame duration are unchanged. Pixel-for-pixel body comparison verified this
+across all 16 GIFs.
+
+The mapping is in `tutorial/gif_steps.json`. With Pillow installed, run
+`python tutorial/label_gifs.py` to update the ribbons. Rerunning replaces the
+ribbon rather than stacking another one. Update the mapping when recording
+timelines or README numbering change.
