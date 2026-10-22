@@ -107,16 +107,17 @@ handler and its dependencies. Google builds and runs the container for you.
    code; we replace that next.
 
 <details open>
-<summary>Watch GIF — opening the function creation form</summary>
+<summary>Watch GIF — function setup, steps 1–6</summary>
 
-![Cloud Run Services: choose Write a function, then the inline function creation form](images/console/function-entry.gif)
+![Function setup: navigation, name, region, Python runtime, public access, Create, and Source editor](images/console/function-setup.gif)
 
 The pointer and click rings are added guides over captured screenshots, not a
-continuous screen recording. The form is titled **Create service** even though
-you selected a function.
-The animation stops before entering settings or creating a resource. Choose
-your region and Python runtime as described above; do not keep the defaults
-without checking them.
+continuous recording. This sequence covers steps 1–6. API enablement is conditional
+and was not prompted in our already-configured project. Creation settings were
+revisited without creating a duplicate resource; the Source frame is from the
+earlier successful rehearsal, with deployment waiting time omitted. The form is
+titled **Create service** even for a function. Use your own service name and check
+the region and runtime rather than accepting defaults.
 
 [Still image of the function creation form](images/console/function-create.png).
 
