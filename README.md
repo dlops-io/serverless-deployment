@@ -111,7 +111,9 @@ handler and its dependencies. Google builds and runs the container for you.
 
 ![Cloud Run Services: choose Write a function, then the inline function creation form](images/console/function-entry.gif)
 
-The form is titled **Create service** even though you selected a function.
+The pointer and click rings are added guides over captured screenshots, not a
+continuous screen recording. The form is titled **Create service** even though
+you selected a function.
 The animation stops before entering settings or creating a resource. Choose
 your region and Python runtime as described above; do not keep the defaults
 without checking them.
@@ -177,7 +179,8 @@ The `src` and `dest` parameters identify languages, not cloud regions.
 ![Edit the handler and dependencies, confirm build completion, then view the French translation](images/console/function-deploy-test.gif)
 
 These screenshots from the console rehearsal show the handler, dependencies,
-completed rollout, and live response. Build waiting time is omitted. The
+completed rollout, and live response, with added pointer and click guides.
+Build waiting time is omitted. The
 translation request returned **Bonjour à tous**, and its request log showed
 HTTP **200**.
 
